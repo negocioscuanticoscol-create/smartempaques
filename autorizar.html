@@ -47,9 +47,10 @@ const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;',
 async function entrar(){
   COD=document.getElementById('cod').value.trim();
   try{ await cargar(); document.getElementById('login').style.display='none'; document.getElementById('panel').style.display='block'; try{sessionStorage.setItem('sw_cod',COD)}catch(e){} }
-  catch(e){ document.getElementById('err').textContent='Código incorrecto.'; }
+  catch(e){ document.getElementById('err').textContent=(e.message==='bloqueado')?'Demasiados intentos. Espera 15 minutos y vuelve a probar.':'Código incorrecto.'; try{sessionStorage.removeItem('sw_cod')}catch(x){} }
 }
-async function cargar(){ TODAS=await rpc('smart_web_admin',{p_codigo:COD,p_accion:'listar'}); try{ PED=await rpc('smart_web_admin_pedidos',{p_codigo:COD}); }catch(e){} pintar(); }
+function chk(r){ if(r&&r.error){ const e=new Error(r.error); throw e; } return r; }
+async function cargar(){ TODAS=chk(await rpc('smart_web_admin',{p_codigo:COD,p_accion:'listar'})); try{ PED=chk(await rpc('smart_web_admin_pedidos',{p_codigo:COD})); }catch(e){ PED=[]; } pintar(); }
 function filtro(f){ F=f; ['pendiente','aprobada','rechazada','pedidos'].forEach(x=>document.getElementById('t_'+x).classList.toggle('on',x===f)); pintar(); }
 function pintarPedidos(){
   const fm=n=>'$'+Math.round(n).toLocaleString('es-CO');
@@ -77,7 +78,7 @@ function pintar(){
       +'</div></div>';
   }).join(''):'<div class="card" style="color:var(--gris)">No hay solicitudes en esta lista.</div>';
 }
-async function decidir(id,estado){ try{ TODAS=await rpc('smart_web_admin',{p_codigo:COD,p_accion:'decidir',p_id:id,p_estado:estado}); pintar(); }catch(e){ alert('No se pudo guardar.'); } }
+async function decidir(id,estado){ try{ TODAS=chk(await rpc('smart_web_admin',{p_codigo:COD,p_accion:'decidir',p_id:id,p_estado:estado})); pintar(); }catch(e){ alert('No se pudo guardar.'); } }
 try{ const c=sessionStorage.getItem('sw_cod'); if(c){ document.getElementById('cod').value=c; entrar(); } }catch(e){}
 </script>
 </body>
