@@ -96,6 +96,8 @@
   .reg{display:none;font-size:12.5px;border-radius:9px;padding:8px 10px;margin-top:6px;line-height:1.5}
   .reg.si{display:block;background:#e7f7ee;color:#0f5a2b}
   .reg.no{display:block;background:#eef3fb;color:#1b365d}
+  .bigbtn{display:block;text-align:center;text-decoration:none;border-radius:12px;padding:14px;font-weight:800;font-size:15px;margin-top:10px}
+  .bigbtn.wa{background:#16a34a;color:#fff}.bigbtn.pdf{background:#0b5cab;color:#fff}
   .cta{text-align:center;margin:10px 0 6px}
   .cta a{background:var(--verde);color:#fff;text-decoration:none;padding:13px 22px;border-radius:12px;font-weight:800;font-size:15px;display:inline-block}
 </style>
@@ -155,7 +157,7 @@
 
 <div class="modal" id="modalPedido"><div class="mbox" style="max-width:560px">
   <h2>Mi pedido</h2>
-  <p>Revisa las cantidades. Al final se genera tu cotización con orden de compra, lista para pagar por transferencia.</p>
+  <p>Revisa las cantidades y llena tus datos. Al final se abre WhatsApp con tu pedido listo para enviar, y haces el pago por transferencia.</p>
   <div id="pLineas"></div>
   <div class="tot" id="pTot"></div>
   <div style="font-size:11px;color:var(--gris);margin-top:4px">Precios sin IVA por unidad. El flete es el que aplica a tu pedido; el envío de PET Multi 1000 ml va incluido.</div>
@@ -171,7 +173,16 @@
   <label>Observaciones</label><textarea id="p_obs" rows="2"></textarea>
   <div class="banco">💳 <b>Forma de pago: transferencia bancaria</b><br>Bancolombia · Cuenta de Ahorros <b>86066350101</b><br>MARTIN GUEVARA MEJÍA · CC 1126604274<br><span style="color:#9aa7b5">Envía el comprobante por WhatsApp y despachamos.</span></div>
   <div id="p_err" style="color:#c0392b;font-size:13px;margin-top:8px"></div>
-  <div class="fila"><button class="no" onclick="cerrarPedido()">Seguir viendo</button><button class="go" id="p_go" onclick="generar()">Generar cotización y orden de compra</button></div>
+  <div class="fila"><button class="no" onclick="cerrarPedido()">Seguir viendo</button><button class="go" id="p_go" onclick="generar()">Enviar pedido por WhatsApp</button></div>
+</div></div>
+
+<div class="modal" id="modalOk"><div class="mbox">
+  <h2>✅ Tu pedido quedó generado</h2>
+  <p id="okFolio" style="font-weight:700;color:var(--tinta)"></p>
+  <p>Ahora toca estos dos pasos: <b>1)</b> envíanos el pedido por WhatsApp y <b>2)</b> haz la transferencia y envíanos el comprobante. Despachamos cuando recibamos el comprobante.</p>
+  <a class="bigbtn wa" id="okWa" target="_blank" rel="noopener">💬 Enviar pedido por WhatsApp</a>
+  <a class="bigbtn pdf" id="okDoc" target="_blank" rel="noopener">📄 Ver cotización y orden de compra (PDF)</a>
+  <div class="fila"><button class="no" onclick="cerrarOk()">Cerrar</button></div>
 </div></div>
 
 <footer id="contacto">
@@ -394,8 +405,7 @@ function docHTML(folio,cl,c){
   const filas=CART.map(l=>{ const r=refDe(l.sku); return '<tr><td>'+r.n+' · '+r.ml+' ml</td><td>'+(COL[l.color]||[l.color])[0]+'</td><td class="n">'+l.qty.toLocaleString('es-CO')+'</td><td class="n">'+fmt(r.p)+'</td><td class="n">'+fmt(l.qty*r.p)+'</td></tr>'; }).join('');
   const filasKit=KIT?'<tr><td>Kit de muestras · 2 unidades de cada referencia</td><td>—</td><td class="n">1</td><td class="n">'+fmt(KIT_PRECIO)+'</td><td class="n">'+fmt(KIT_PRECIO)+'</td></tr>':'';
   const logo=new URL('images/logo.jpg',location.href).href;
-  const resumen='Hola Smart Empaques 👋 Soy '+cl.nombre+(cl.empresa?' ('+cl.empresa+')':'')+'. Acabo de generar la orden de compra '+folio+' por '+fmt(c.total)+'. Voy a pagar por transferencia y les envío el comprobante.';
-  const wa='https://wa.me/'+WA+'?text='+encodeURIComponent(resumen);
+  const wa=waPedido(folio,cl,c);
   return '<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Cotización y orden de compra '+folio+'</title><style>'
   +'*{box-sizing:border-box;font-family:Segoe UI,Arial,sans-serif}body{margin:0;padding:22px;color:#0f2440;max-width:800px;margin:0 auto}'
   +'.h{display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #0b5cab;padding-bottom:10px}.h img{height:64px}.h .f{text-align:right;font-size:13px}.h .f b{font-size:18px;color:#0b5cab}'
@@ -412,24 +422,30 @@ function docHTML(folio,cl,c){
   +'<div class="c">Pedido mínimo 100 unidades por referencia y color. Precios sin IVA por unidad. Sujeto a disponibilidad de inventario al momento del pago. Smart Empaques · Km 9 Vía Manizales – Neira, Finca La Libertad · smartempaques.co</div>'
   +'<div class="bt"><button class="p" onclick="window.print()">🖨️ Imprimir / Guardar PDF</button><a class="w" href="'+wa+'" target="_blank">💬 Avisar por WhatsApp</a></div></body></html>';
 }
+function waPedido(folio,cl,c){
+  const lineas=CART.map(l=>{ const r=refDe(l.sku); return '• '+r.n+' '+r.ml+' ml · '+(COL[l.color]||[l.color])[0]+' · '+l.qty.toLocaleString('es-CO')+' uds'; });
+  if(KIT) lineas.push('• Kit de muestras');
+  const m='Hola Smart Empaques 👋 Soy '+cl.nombre+(cl.empresa?' ('+cl.empresa+')':'')+'.\nGeneré la orden de compra *'+folio+'*:\n'+lineas.join('\n')+'\nTotal: *'+fmt(c.total)+'* (con IVA y flete)\nEntrega: '+cl.dir+', '+cl.ciudad+'\nVoy a pagar por transferencia y les envío el comprobante.';
+  return 'https://wa.me/'+WA+'?text='+encodeURIComponent(m);
+}
 async function generar(){
   const v=id=>document.getElementById(id).value.trim(), err=document.getElementById('p_err'); err.textContent='';
   if(!CART.length&&!KIT){ return; }
   const cl={nombre:v('p_nombre'),empresa:v('p_empresa'),nit:v('p_nit'),cel:v('p_cel'),email:v('p_email'),ciudad:v('p_ciudad'),dir:v('p_dir'),obs:v('p_obs')};
   if(!cl.nombre||!cl.nit||cl.cel.replace(/\D/g,'').length<7||cl.email.indexOf('@')<1||!cl.ciudad||!cl.dir){ err.textContent='Faltan datos: nombre, NIT o cédula, celular, correo, ciudad y dirección.'; return; }
   for(const l of CART){ if(l.qty<100){ err.textContent='El mínimo es 100 unidades por referencia y color.'; return; } }
-  const win=window.open('','_blank');
-  const b=document.getElementById('p_go'); b.disabled=true; b.textContent='Generando…';
+  const b=document.getElementById('p_go'); b.disabled=true; b.textContent='Enviando…';
   const c=calcular(), folio=folioNuevo();
   try{
     await rpc('smart_web_pedido',{p_folio:folio,p_cliente:cl,p_items:CART.map(l=>({sku:l.sku,color:l.color,qty:l.qty,precio:refDe(l.sku).p})).concat(KIT?[{sku:'KIT',color:'-',qty:1,precio:KIT_PRECIO}]:[]),p_subtotal:c.sub,p_iva:c.iva,p_flete:c.flete,p_total:c.total});
-  }catch(e){ /* el documento se genera igual; el pedido llega también por WhatsApp */ }
-  const html=docHTML(folio,cl,c);
-  if(win){ win.document.open(); win.document.write(html); win.document.close(); }
-  else { const u=URL.createObjectURL(new Blob([html],{type:'text/html'})); location.href=u; }
-  b.disabled=false; b.textContent='Generar cotización y orden de compra';
+  }catch(e){ /* el pedido sale igual por WhatsApp */ }
+  const wa=waPedido(folio,cl,c);
+  CART=[]; KIT=false; pintarBarra();
+  b.disabled=false; b.textContent='Enviar pedido por WhatsApp';
   cerrarPedido();
+  window.location.href=wa;   // misma pestaña: así el navegador no lo bloquea como ventana emergente
 }
+function cerrarOk(){ document.getElementById('modalOk').classList.remove('on'); }
 
 /* Cliente registrado: al escribir el NIT o cédula se busca en la base de Smart y se llenan los datos básicos.
    La función solo devuelve nombre, empresa, ciudad, dirección (si es empresa) y los 4 últimos del celular. */
