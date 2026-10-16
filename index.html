@@ -146,6 +146,7 @@
     <div class="preg">
       <button onclick="abrirFlyer('modalProb')"><span>¿Problemas con tus envases?</span><small>TOCA AQUÍ</small></button>
       <button onclick="abrirFlyer('modalPq')"><span>¿Por qué nuestro envase?</span><small>TOCA AQUÍ</small></button>
+      <button onclick="abrirFlyer('modalInv')"><span>¿Te quedaste sin envases?</span><small>TOCA AQUÍ</small></button>
     </div>
   </div>
 </section>
@@ -188,6 +189,8 @@
 </div></div>
 
 <div class="modal" id="modalProb"><div class="mbox flyer"><button class="cierra" onclick="cerrarFlyer('modalProb')" aria-label="Cerrar">✕</button><img src="images/volante-problemas-hd.jpg" alt="¿Te pasa esto? Deja de pagar la diferencia. Se rompe en el transporte, pierde vida útil, se derrama. Usa nuestros envases directo de fábrica: cierre de doble acción, precinto de seguridad, material grado alimenticio, estructura reforzada y alta barrera térmica y de gases. Desde 115 ml hasta 1.5 L, 15 tamaños. Pide tu kit de muestra: $39.000, incluye envío, pedido mínimo 100 unidades. Escríbenos al 312 412 4034" style="display:block;width:100%;height:auto"></div></div>
+
+<div class="modal" id="modalInv"><div class="mbox flyer"><button class="cierra" onclick="cerrarFlyer('modalInv')" aria-label="Cerrar">✕</button><img src="images/volante-inventario-hd.jpg" alt="Inventario listo, tu producción no para. Disponibilidad inmediata en Colombia. Sin envase, tu línea se detiene. Con nosotros nunca te falta envase: stock en Colombia, índice de cobertura vigilado, respaldo en temporadas. Desde 115 ml hasta 1.5 L, 15 tamaños. Asegura tu inventario hoy: 312 412 4034" style="display:block;width:100%;height:auto"></div></div>
 
 <div class="modal" id="modalPq"><div class="mbox flyer"><button class="cierra" onclick="cerrarFlyer('modalPq')" aria-label="Cerrar">✕</button>
 <section class="porque">
@@ -387,7 +390,7 @@ function abrir(){
 }
 function abrirFlyer(id){ document.getElementById(id).classList.add('on'); }
 function cerrarFlyer(id){ document.getElementById(id).classList.remove('on'); }
-document.addEventListener('click',e=>{ if(e.target.classList&&e.target.classList.contains('modal')&&(e.target.id==='modalProb'||e.target.id==='modalPq')) e.target.classList.remove('on'); });
+document.addEventListener('click',e=>{ if(e.target.classList&&e.target.classList.contains('modal')&&(e.target.id==='modalProb'||e.target.id==='modalPq'||e.target.id==='modalInv')) e.target.classList.remove('on'); });
 function cerrar(){ document.getElementById('modal').classList.remove('on'); }
 async function enviar(){
   const v=id=>document.getElementById(id).value.trim(), err=document.getElementById('f_err'); err.textContent='';
