@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="images/icono.png">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Smart Empaques · Envases herméticos</title>
+<meta name="description" content="Envases herméticos Flexipack y PET para alimentos. Disponibilidad en tiempo real por referencia y color.">
+<style>
+  :root{--azul:#0b5cab;--azul2:#1577d6;--beige:#cdbfa6;--tinta:#0f2440;--linea:#e3e8ef;--verde:#16a34a;--gris:#1b365d;--fondo:#f4f6f9}
+  *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',system-ui,Arial,sans-serif}
+  body{background:var(--fondo);color:var(--tinta)}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 16px}
+  header{background:#fff;border-bottom:3px solid var(--azul)}
+  .top{display:flex;justify-content:space-between;align-items:center;padding:8px 0;gap:10px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center}.brand img{height:92px;display:block}
+  .brand .logo{width:42px;height:42px;background:var(--azul);border-radius:9px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:24px;font-weight:800}
+  .brand .bn{font-weight:800;font-size:17px;line-height:1}.brand .bs{font-size:9px;letter-spacing:2px;color:var(--gris);margin-top:3px}
+  nav a{color:var(--tinta);text-decoration:none;font-weight:600;font-size:14px;margin-left:18px}
+  .banner{background:linear-gradient(120deg,#0b5cab,#1577d6);color:#fff;padding:42px 0}
+  .banner h1{font-size:34px;font-weight:800;max-width:640px;line-height:1.15}
+  .banner p{margin-top:10px;font-size:16px;max-width:560px;opacity:.95}
+  .banner .fotos{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+  .banner .fotos img{height:90px;border-radius:10px;border:2px solid rgba(255,255,255,.5)}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--gris);margin:22px 0 14px;align-items:center}
+  .dot{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:-1px;margin-right:5px;border:1px solid #cbd5e1}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:30px}
+  @media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:560px){.grid{grid-template-columns:1fr}.banner h1{font-size:26px}}
+  .card{background:#fff;border-radius:14px;overflow:hidden;border:2px solid var(--azul);box-shadow:0 3px 13px rgba(15,36,64,.12);display:flex;flex-direction:column}
+  .visor{background:radial-gradient(circle at 50% 40%,#2a6fb8 0%,#0b2a4d 100%);height:210px;position:relative;display:flex;align-items:center;justify-content:center}
+  .visor img{max-width:100%;max-height:100%;object-fit:contain}
+  .visor svg{height:130px;opacity:.9}
+  .ley{position:absolute;left:8px;right:8px;bottom:6px;background:rgba(255,255,255,.88);color:#0f2440;font-size:11px;font-weight:600;text-align:center;border-radius:8px;padding:4px 6px}
+  .mini{display:flex;gap:6px;padding:8px 10px 0}
+  .mini button{flex:1 1 auto;white-space:nowrap;border:1px solid var(--linea);background:#fff;border-radius:8px;padding:5px 2px;font-size:11px;font-weight:600;color:var(--gris);cursor:pointer}
+  .mini button.on{background:var(--azul);color:#fff;border-color:var(--azul)}
+  .chead{background:var(--azul);color:#fff;text-align:center;font-weight:700;font-size:13px;letter-spacing:.5px;padding:9px}
+  .cbody{padding:12px 14px 14px;flex:1;display:flex;flex-direction:column}
+  .cap{text-align:center}.cap .ml{font-size:26px;font-weight:800}.cap .ml span{font-size:13px;color:var(--azul2)}.cap .oz{font-size:13px;color:var(--gris);margin-left:6px}
+  .ficha{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px}
+  .ficha div{border:1px solid var(--linea);border-radius:9px;padding:6px 4px;text-align:center}
+  .ficha .l{font-size:10px;font-weight:700;letter-spacing:.8px;color:#1b365d}.ficha .v{font-size:13px;font-weight:700;margin-top:2px}
+  .cols{margin-top:10px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;font-size:12px;color:var(--gris)}
+  .swatch{width:13px;height:13px;border-radius:50%;border:1px solid #cbd5e1;display:inline-block;vertical-align:-2px;margin-right:4px}
+  .precio{margin-top:auto;padding-top:12px;text-align:center;border-top:1px solid var(--linea);margin-top:12px}
+  .precio b{font-size:22px;color:var(--azul)}.precio small{display:block;font-size:11px;color:var(--gris);margin-top:3px}
+  .vacio{text-align:center;color:var(--gris);padding:40px 0}
+  footer{background:var(--tinta);color:#cfd8e6;padding:28px 0;margin-top:20px;font-size:14px;line-height:1.7}
+  footer b{color:#fff}
+  .mapa{display:block;width:100%;max-width:560px;height:220px;border:0;border-radius:12px;margin-top:14px}
+  .kit{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;background:#eef5ff;border:2px solid var(--azul);border-radius:14px;padding:16px 20px;margin:6px 0 18px;font-size:14px;color:var(--gris)}
+  .kit b{color:var(--azul);font-size:17px}.kitp{text-align:right}
+  .btnf{margin-top:10px;width:100%;border:2px solid var(--azul);background:#fff;color:var(--azul);font-weight:700;font-size:13px;border-radius:10px;padding:9px;cursor:pointer}
+  .btnf:hover{background:var(--azul);color:#fff}
+  .docs a,[data-docs] a{display:block;text-align:center;background:#e7f7ee;color:#157a3c;font-weight:700;font-size:13px;border-radius:10px;padding:8px;text-decoration:none;margin-top:6px}
+  .aviso{background:#fff7e0;border:1px solid #f0d58a;color:#7a5b00;border-radius:12px;padding:12px 16px;margin:0 0 14px;font-size:14px;display:none}
+  .aviso.ok{background:#e7f7ee;border-color:#a9dfbd;color:#157a3c}
+  .modal{position:fixed;inset:0;background:rgba(15,36,64,.65);display:none;align-items:center;justify-content:center;z-index:50;padding:14px}
+  .modal.on{display:flex}
+  .mbox{background:#fff;border-radius:16px;max-width:460px;width:100%;max-height:94vh;overflow:auto;padding:22px}
+  .mbox h2{font-size:20px;margin-bottom:6px}.mbox p{font-size:13px;color:var(--gris);margin-bottom:12px;line-height:1.5}
+  .mbox label{display:block;font-size:12px;font-weight:700;margin:10px 0 4px}
+  .mbox input,.mbox textarea{width:100%;border:1px solid #cbd5e1;border-radius:9px;padding:10px;font-size:14px}
+  .mbox .fila{display:flex;gap:10px;margin-top:16px}
+  .mbox button{flex:1;border:0;border-radius:10px;padding:12px;font-weight:800;font-size:14px;cursor:pointer}
+  .mbox .go{background:var(--azul);color:#fff}.mbox .no{background:#eef1f6;color:var(--tinta)}
+  .agrl{margin-top:12px;font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--gris)}
+  .agr{display:flex;gap:6px;margin-top:4px}
+  .agr select,.agr input{border:1px solid #cbd5e1;border-radius:9px;padding:8px;font-size:13px;min-width:0}
+  .agr select{flex:1.2}.agr input{flex:1;width:70px}
+  .agr button{border:0;background:var(--verde);color:#fff;font-weight:800;border-radius:9px;padding:0 12px;font-size:13px;cursor:pointer;white-space:nowrap}
+  .barra{position:fixed;left:0;right:0;bottom:0;background:var(--tinta);color:#fff;padding:12px 16px;display:none;align-items:center;justify-content:space-between;gap:10px;z-index:40;box-shadow:0 -4px 16px rgba(0,0,0,.25)}
+  .barra button{background:var(--verde);color:#fff;border:0;border-radius:10px;padding:11px 18px;font-weight:800;font-size:14px;cursor:pointer}
+  .pl{display:flex;justify-content:space-between;gap:8px;align-items:center;border-bottom:1px solid var(--linea);padding:8px 0;font-size:13px}
+  .pl input{width:78px;border:1px solid #cbd5e1;border-radius:8px;padding:6px}
+  .pl .x{background:none;border:0;color:#c0392b;font-size:18px;cursor:pointer;padding:0 4px;flex:0}
+  .tot{font-size:13px;line-height:1.9;margin-top:8px}.tot div{display:flex;justify-content:space-between}
+  .tot .g{font-size:18px;font-weight:800;color:var(--azul);border-top:2px solid var(--linea);margin-top:4px;padding-top:6px}
+  .banco{background:#0d1b2a;color:#e8eef5;border-radius:10px;padding:12px;margin-top:12px;font-size:12.5px;line-height:1.55}
+  .banco b{font-size:18px;letter-spacing:2px}
+  .kit{display:grid;grid-template-columns:200px 1fr auto;align-items:center;gap:18px}
+  .kitimg{width:200px;height:auto;border-radius:12px;background:#fff;display:block}
+  .kitp{text-align:right}
+  .btnkit{margin-top:10px;background:var(--verde);color:#fff;border:0;border-radius:10px;padding:12px 20px;font-weight:800;font-size:15px;cursor:pointer;font-family:inherit}
+  .btnkit:hover{filter:brightness(1.08)}
+  @media(max-width:700px){.kit{grid-template-columns:1fr}.kitimg{width:100%;max-width:340px;margin:0 auto}.kitp{text-align:center}}
+  .nota{text-align:center;font-size:13px;color:var(--gris);margin:0 0 18px}
+  .kitc{border-color:#f59e0b;box-shadow:0 4px 18px rgba(245,158,11,.35)}
+  .kitc .kitv{background:#fff7e6;height:210px}
+  .kitc .chead{background:#f59e0b;color:#0f2440;font-size:14px}
+  .kitc .ml{color:#c2410c}
+  .kitc .ficha .v{font-size:12px}
+  .kitc .btnkit{width:100%;margin-top:auto;padding:13px;font-size:15px}
+  .kitc .cbody p{font-size:12.5px;color:var(--gris);text-align:center;margin:10px 0 12px;line-height:1.5}
+  .reg{display:none;font-size:12.5px;border-radius:9px;padding:8px 10px;margin-top:6px;line-height:1.5}
+  .reg.si{display:block;background:#e7f7ee;color:#0f5a2b}
+  .reg.no{display:block;background:#eef3fb;color:#1b365d}
+  .cta{text-align:center;margin:10px 0 6px}
+  .cta a{background:var(--verde);color:#fff;text-decoration:none;padding:13px 22px;border-radius:12px;font-weight:800;font-size:15px;display:inline-block}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap top">
+    <a href="#" class="brand"><img src="images/logo.jpg" alt="Smart Empaques · Empaque inteligente"></a>
+    <nav><a href="#catalogo">Catálogo</a><a href="#contacto">Contacto</a></nav>
+  </div>
+</header>
+
+<section class="banner">
+  <div class="wrap">
+    <h1>Envases herméticos para tus alimentos</h1>
+    <p>Línea Flexipack y PET. Solo mostramos lo que tenemos disponible hoy.</p>
+    <div class="fotos" id="bannerFotos"></div>
+  </div>
+</section>
+
+<main class="wrap" id="catalogo">
+  <div class="legend">
+    <span><span class="dot" style="background:#fff"></span>Transparente</span>
+    <span><span class="dot" style="background:#f3f4f6"></span>Blanco</span>
+    <span><span class="dot" style="background:#1a1a1a"></span>Negro</span>
+    <span id="corte"></span>
+  </div>
+  <div id="aviso" class="aviso"></div>
+  <div id="grid" class="grid"><div class="vacio" style="grid-column:1/-1">Cargando disponibilidad…</div></div>
+  <div class="nota">Pedido mínimo 100 unidades por referencia y color. La mayoría de referencias están disponibles en blanco y transparente.</div>
+  <div class="cta"><a id="wa" href="#" target="_blank" rel="noopener">💬 Hablar con un representante de ventas</a></div>
+</main>
+
+<div class="modal" id="modal"><div class="mbox">
+  <h2>Fichas técnicas y planos de etiquetas</h2>
+  <p>Esta información es solo para clientes. Llena tus datos y nosotros revisamos y autorizamos el acceso. Cuando te aprobemos, aparecen los botones de descarga en cada envase.</p>
+  <div id="formBox">
+    <label>NIT o cédula <span style="font-weight:400">(si ya eres cliente, tus datos salen solos)</span></label><input id="f_nit" inputmode="numeric" oninput="buscarDoc('f')">
+    <div class="reg" id="f_reg"></div>
+    <label>Nombre y apellido *</label><input id="f_nombre" autocomplete="name">
+    <label>Empresa</label><input id="f_empresa" autocomplete="organization">
+    <label>Celular / WhatsApp *</label><input id="f_cel" inputmode="tel" autocomplete="tel">
+    <label>Correo *</label><input id="f_email" type="email" autocomplete="email">
+    <label>Ciudad</label><input id="f_ciudad">
+    <label>¿Para qué producto lo necesitas?</label><textarea id="f_uso" rows="2"></textarea>
+    <div id="f_err" style="color:#c0392b;font-size:13px;margin-top:8px"></div>
+    <div class="fila"><button class="no" onclick="cerrar()">Cancelar</button><button class="go" id="f_go" onclick="enviar()">Enviar solicitud</button></div>
+  </div>
+  <div id="okBox" style="display:none">
+    <p style="color:#157a3c;font-weight:700;font-size:15px">✅ Solicitud enviada</p>
+    <p>La revisamos y te autorizamos. Para que sea más rápido, avísanos por WhatsApp. Cuando te aprobemos, vuelve a esta página desde este mismo dispositivo y verás los botones de descarga.</p>
+    <div class="fila"><button class="no" onclick="cerrar()">Cerrar</button><button class="go" onclick="avisarWA()">Avisar por WhatsApp</button></div>
+  </div>
+</div></div>
+
+<div class="barra" id="barra"><div id="barraTxt" style="font-size:14px"></div><button onclick="abrirPedido()">Ver pedido y cotizar</button></div>
+
+<div class="modal" id="modalPedido"><div class="mbox" style="max-width:560px">
+  <h2>Mi pedido</h2>
+  <p>Revisa las cantidades. Al final se genera tu cotización con orden de compra, lista para pagar por transferencia.</p>
+  <div id="pLineas"></div>
+  <div class="tot" id="pTot"></div>
+  <div style="font-size:11px;color:var(--gris);margin-top:4px">Precios sin IVA por unidad. El flete es el que aplica a tu pedido; el envío de PET Multi 1000 ml va incluido.</div>
+  <h2 style="font-size:16px;margin-top:16px">Tus datos</h2>
+  <label>NIT o cédula * <span style="font-weight:400">(si ya eres cliente, tus datos salen solos)</span></label><input id="p_nit" inputmode="numeric" oninput="buscarDoc('p')">
+  <div class="reg" id="p_reg"></div>
+  <label>Nombre y apellido *</label><input id="p_nombre" autocomplete="name">
+  <label>Empresa</label><input id="p_empresa" autocomplete="organization">
+  <label>Celular / WhatsApp *</label><input id="p_cel" inputmode="tel" autocomplete="tel">
+  <label>Correo *</label><input id="p_email" type="email" autocomplete="email">
+  <label>Ciudad de entrega *</label><input id="p_ciudad">
+  <label>Dirección de entrega *</label><input id="p_dir">
+  <label>Observaciones</label><textarea id="p_obs" rows="2"></textarea>
+  <div class="banco">💳 <b>Forma de pago: transferencia bancaria</b><br>Bancolombia · Cuenta de Ahorros <b>86066350101</b><br>MARTIN GUEVARA MEJÍA · CC 1126604274<br><span style="color:#9aa7b5">Envía el comprobante por WhatsApp y despachamos.</span></div>
+  <div id="p_err" style="color:#c0392b;font-size:13px;margin-top:8px"></div>
+  <div class="fila"><button class="no" onclick="cerrarPedido()">Seguir viendo</button><button class="go" id="p_go" onclick="generar()">Generar cotización y orden de compra</button></div>
+</div></div>
+
+<footer id="contacto">
+  <div class="wrap">
+    <b>SMART EMPAQUES</b><br>
+    Envases herméticos · Envíos a todo Colombia<br>
+    WhatsApp ventas: <b>312 412 4034</b><br>
+    Km 9 Vía Manizales – Neira, Finca La Libertad<br>
+    <a href="https://www.google.com/maps?q=5.129441,-75.5055226&z=17&hl=es" target="_blank" rel="noopener" style="color:#7fb4ff">📍 Ver en Google Maps</a>
+    <iframe class="mapa" title="Ubicación Smart Empaques" loading="lazy" src="https://www.google.com/maps?q=5.129441,-75.5055226&z=16&hl=es&output=embed"></iframe>
+  </div>
+</footer>
+
+<script>
+const SBU='https://fnayedgvamxktxfvywwl.supabase.co', SBK='sb_publishable_NVTYNkJ0V6obLwgwjXza1g_3Ihp-xMv';
+const WA='573124124034';
+/* Ficha de cada referencia. boca/alto = catálogo oficial; pack/precio = lámina del catálogo (lista L3 Mayorista, sin IVA ni flete). Si cambian en el cotizador, se cambian aquí. */
+const REFS=[
+ {sku:'F115', n:'Flexipack 115', ml:'115',   oz:'4 oz',   boca:'Ø67 mm',    alto:'52 mm',  pack:1890, p:507,  forma:'tub'},
+ {sku:'F155', n:'Flexipack 155', ml:'155',   oz:'5 oz',   boca:'Ø67 mm',    alto:'69 mm',  pack:1800, p:508,  forma:'tub'},
+ {sku:'F180', n:'Flexipack 180', ml:'180',   oz:'6 oz',   boca:'Ø95 mm',    alto:'45 mm',  pack:1056, p:729,  forma:'tub'},
+ {sku:'F192', n:'ITF Freeze 193×127', ml:'192', oz:'',  boca:'193×127 mm',alto:'65 mm',  pack:300,  p:1703, forma:'box'},
+ {sku:'F235', n:'Flexipack 235', ml:'235',   oz:'8 oz',   boca:'Ø95 mm',    alto:'53 mm',  pack:624, p:753,  forma:'tub'},
+ {sku:'F240', n:'Flexipack 240', ml:'240',   oz:'8 oz',   boca:'Ø95 mm',    alto:'54 mm',  pack:480, p:687,  forma:'tub'},
+ {sku:'F275', n:'Flexipack 275', ml:'275',   oz:'9.5 oz', boca:'Ø95 mm',    alto:'72 mm',  pack:720, p:798,  forma:'tub'},
+ {sku:'F285', n:'Flexipack 285', ml:'285',   oz:'9.5 oz', boca:'120×94 mm', alto:'40 mm',  pack:660, p:815,  forma:'box'},
+ {sku:'F365', n:'Flexipack 365', ml:'365',   oz:'12.5 oz',boca:'Ø97 mm',    alto:'82 mm',  pack:600, p:916,  forma:'tub'},
+ {sku:'F400', n:'Flexipack 400', ml:'400',   oz:'13.5 oz',boca:'120×94 mm', alto:'52 mm',  pack:640, p:881,  forma:'box'},
+ {sku:'F520', n:'Flexipack 520', ml:'520',   oz:'17.5 oz',boca:'Ø95 mm',    alto:'116 mm', pack:575, p:1019, forma:'tub'},
+ {sku:'F565', n:'Flexipack 565', ml:'565',   oz:'19 oz',  boca:'Ø118 mm',   alto:'80 mm',  pack:435, p:1075, forma:'tub'},
+ {sku:'F801', n:'Flexipack 801', ml:'800',   oz:'27 oz',  boca:'125×94 mm', alto:'126 mm', pack:414, p:1420, forma:'box'},
+ {sku:'F1001',n:'Flexipack 1001',ml:'1.000', oz:'34 oz',  boca:'Ø122 mm',   alto:'126 mm', pack:308, p:1583, forma:'tub'},
+ {sku:'F1180',n:'Flexipack 1180',ml:'1.180', oz:'40 oz',  boca:'Ø133 mm',   alto:'131 mm', pack:242, p:2251, forma:'tub'},
+ {sku:'F1500C',n:'Flexipack 1500',ml:'1.500',oz:'50.5 oz',boca:'Ø151 mm',   alto:'135 mm', pack:189, p:2365, forma:'tub'},
+ {sku:'PM330',n:'PET Multi 330', ml:'330',   oz:'11 oz',  boca:'Ø66.5 mm',  alto:'144 mm', pack:2717, p:913,  forma:'bottle'},
+ {sku:'PM1000',n:'PET Multi 1000',ml:'1.000',oz:'34 oz',  boca:'Ø83.5 mm',  alto:'248 mm', pack:1008, p:1460, forma:'bottle'}
+];
+const SVG={
+ tub:'<svg viewBox="0 0 80 80"><path d="M16 26 h48 l-5 44 a4 4 0 0 1 -4 4 h-26 a4 4 0 0 1 -4 -4 z" fill="#cfe3f5" stroke="#9bb8d6" stroke-width="1.5"/><ellipse cx="40" cy="26" rx="24" ry="6" fill="#e8f1fb" stroke="#9bb8d6" stroke-width="1.5"/></svg>',
+ box:'<svg viewBox="0 0 80 80"><path d="M14 34 h52 l-4 34 a4 4 0 0 1 -4 4 h-36 a4 4 0 0 1 -4 -4 z" fill="#cfe3f5" stroke="#9bb8d6" stroke-width="1.5"/><rect x="14" y="28" width="52" height="8" rx="3" fill="#e8f1fb" stroke="#9bb8d6" stroke-width="1.5"/></svg>',
+ bottle:'<svg viewBox="0 0 80 80"><rect x="34" y="8" width="12" height="12" fill="#e8f1fb" stroke="#9bb8d6" stroke-width="1.5"/><path d="M32 20 h16 v10 l4 6 v30 a4 4 0 0 1 -4 4 h-16 a4 4 0 0 1 -4 -4 v-30 l4 -6 z" fill="#cfe3f5" stroke="#9bb8d6" stroke-width="1.5"/></svg>'
+};
+const COL={transparente:['Transparente','#ffffff'],blanco:['Blanco','#f3f4f6'],negro:['Negro','#1a1a1a']};
+const fmt=n=>'$'+Math.round(n).toLocaleString('es-CO');
+/* Fotos: images/<sku>-1.png = foto de referencia (transparente, con el fondo quitado).
+   images/<sku>-blanco.jpg / -negro.jpg = foto de ese color cuando exista; si no existe se muestra
+   la de referencia con la leyenda de que es de referencia y en qué colores hay disponible. */
+function vistaColor(sku,forma,color,todos){
+  const s=sku.toLowerCase(), cols=(todos||[]).map(c=>(COL[c]||[c])[0].toLowerCase());
+  const ley='Foto de referencia';
+  const ref='<img src="images/'+s+'-1.png" alt="'+sku+'" loading="lazy" onerror="this.parentNode.innerHTML=window.SVGF[\''+forma+'\']">';
+  const cap='';
+  if(color==='transparente'){ return ref+cap; }
+  return '<img src="images/'+s+'-'+color+'.jpg" alt="'+sku+' '+color+'" loading="lazy" onerror="this.onerror=null;this.src=\'images/'+s+'-1.png\'">'+cap;
+}
+window.SVGF=SVG;
+function cambiar(sku,forma,color,btn){
+  const card=btn.closest('.card');
+  const todos=Array.from(card.querySelectorAll('.mini button')).map(b=>b.textContent.replace('Envase ','').trim());
+  const cols=todos.map(n=>({transparente:'transparente',blanco:'blanco',negro:'negro'}[n]||n));
+  card.querySelector('.visor').innerHTML=vistaColor(sku,forma,color,cols);
+  card.querySelectorAll('.mini button').forEach(b=>b.classList.toggle('on',b===btn));
+}
+async function cargar(){
+  let inv=[];
+  try{
+    const r=await fetch(SBU+'/rest/v1/nc_inventario?empresa=eq.smart&select=sku,color,cantidad,activo,fecha,creado_en&order=fecha.desc,creado_en.desc&limit=1000',{headers:{apikey:SBK,Authorization:'Bearer '+SBK}});
+    inv=await r.json();
+  }catch(e){}
+  if(!Array.isArray(inv)) inv=[];
+  // solo el ÚLTIMO corte por sku+color
+  const seen={}, por={};
+  inv.forEach(x=>{ const k=x.sku+'|'+x.color; if(seen[k])return; seen[k]=1; if(x.activo!==false && (+x.cantidad||0)>0){ (por[x.sku]=por[x.sku]||[]).push(x.color); STOCK[x.sku+'|'+x.color]=+x.cantidad; } });
+  if(inv[0]&&inv[0].fecha) document.getElementById('corte').textContent='Disponibilidad al '+inv[0].fecha;
+  const vis=REFS.filter(r=>por[r.sku]&&por[r.sku].length);
+  const g=document.getElementById('grid');
+  const KITCARD='<div class="card kitc"><div class="visor kitv"><img src="images/kit-muestras.jpg" alt="Kit de muestras Smart Empaques"></div><div class="chead">🧪 KIT DE MUESTRAS</div><div class="cbody"><div class="cap"><span class="ml">$39.000</span></div><div class="ficha"><div><div class="l">POR REFERENCIA</div><div class="v">2 envases</div></div><div><div class="l">REFERENCIAS</div><div class="v">Todas</div></div><div><div class="l">ENVÍO</div><div class="v">Incluido</div></div></div><p>Pruébalos con tu producto antes de hacer tu pedido. Dos envases de cada referencia disponible.</p><button class="btnkit" onclick="pedirKit()">🧪 Pedir kit de muestras</button></div></div>';
+  if(!vis.length){ g.innerHTML=KITCARD+'<div class="vacio" style="grid-column:1/-1">Consulta disponibilidad por WhatsApp.</div>'; }
+  else g.innerHTML=KITCARD+vis.map(r=>{
+    const cols=por[r.sku].map(c=>`<span><span class="swatch" style="background:${(COL[c]||[c,'#fff'])[1]}"></span>${(COL[c]||[c])[0]}</span>`).join('');
+    return `<div class="card">
+      <div class="visor" id="v-${r.sku}">${vistaColor(r.sku,r.forma,'transparente',[])}</div>
+      <div class="chead">${r.n.toUpperCase()}</div>
+      <div class="cbody">
+        <div class="cap"><span class="ml">${r.ml}<span> ml</span></span>${r.oz?`<span class="oz">${r.oz}</span>`:''}</div>
+        <div class="ficha">
+          <div><div class="l">BOCA</div><div class="v">${r.boca}</div></div>
+          <div><div class="l">ALTO</div><div class="v">${r.alto}</div></div>
+          <div><div class="l">POR PACA</div><div class="v">${r.pack.toLocaleString('es-CO')}</div></div>
+        </div>
+        <div class="cols"><b style="color:var(--tinta)">Colores disponibles:</b> ${cols}</div>
+        <div class="precio"><b>${fmt(r.p)}</b> <span style="font-size:12px;color:var(--gris)">c/u · sin IVA ni flete</span>
+          <small>Se venden solo 100 unidades por referencia y color.</small></div>
+        <div class="agrl">Color y unidades</div>
+        <div class="agr">
+          <select id="c-${r.sku}" aria-label="Color">${por[r.sku].length>1?'<option value="">Elige el color…</option>':''}${por[r.sku].map(c=>`<option value="${c}">${(COL[c]||[c])[0]}</option>`).join('')}</select>
+          <input id="q-${r.sku}" type="number" min="100" step="1" value="100" aria-label="Cantidad">
+          <button onclick="agregar('${r.sku}')">+ Pedido</button>
+        </div>
+        <div data-docs="${r.sku}"></div>
+      </div></div>`;
+  }).join('');
+  document.getElementById('wa').href='https://wa.me/'+WA+'?text='+encodeURIComponent('Hola Smart Empaques 👋 Vi la página y quiero hablar con un representante de ventas.');
+}
+
+/* ===== Fichas técnicas y planos: acceso con aprobación =====
+   La solicitud queda en smart_web_solicitudes (nadie la lee directo; todo pasa por funciones).
+   El navegador guarda un token; smart_web_estado(token) devuelve los enlaces solo si está aprobada. */
+let DOCS=[], ESTADO='', SOL=null;
+const rpc=(fn,body)=>fetch(SBU+'/rest/v1/rpc/'+fn,{method:'POST',headers:{apikey:SBK,Authorization:'Bearer '+SBK,'Content-Type':'application/json'},body:JSON.stringify(body)}).then(r=>r.ok?r.json():r.json().then(e=>{throw new Error(e.message||'error')}));
+function lsGet(k){ try{return localStorage.getItem(k)}catch(e){return null} }
+function lsSet(k,v){ try{localStorage.setItem(k,v)}catch(e){} }
+async function revisarAcceso(){
+  const tk=lsGet('sw_token'); const av=document.getElementById('aviso');
+  if(tk){
+    try{
+      const r=await rpc('smart_web_estado',{p_token:tk}); ESTADO=r.estado; DOCS=r.docs||[];
+      if(ESTADO==='aprobada'){ av.className='aviso ok'; av.style.display='block'; av.textContent='✅ Acceso autorizado: ya puedes descargar las fichas técnicas y los planos de etiquetas en cada envase.'; }
+      else if(ESTADO==='pendiente'){ av.className='aviso'; av.style.display='block'; av.textContent='⏳ Tu solicitud está en revisión. Cuando te autoricemos, recarga esta página.'; }
+      else if(ESTADO==='rechazada'){ av.className='aviso'; av.style.display='block'; av.textContent='Tu solicitud no fue autorizada. Escríbenos por WhatsApp si crees que es un error.'; }
+      else { av.style.display='none'; }
+    }catch(e){}
+  }
+  pintarDocs();
+}
+function pintarDocs(){
+  document.querySelectorAll('[data-docs]').forEach(el=>{
+    const sku=el.getAttribute('data-docs');
+    if(ESTADO==='aprobada'){
+      const mios=DOCS.filter(d=>d.sku===sku);
+      el.innerHTML=mios.length?mios.map(d=>'<a href="'+d.url+'" target="_blank" rel="noopener">'+(d.tipo==='ficha'?'📄 Ficha técnica':'📐 Plano de etiqueta')+'</a>').join(''):'<div style="font-size:12px;color:var(--gris);text-align:center;margin-top:8px">Ficha técnica en preparación</div>';
+    } else {
+      el.innerHTML='<button class="btnf" onclick="abrir()">📄 Ficha técnica y planos de etiquetas</button>';
+    }
+  });
+}
+function abrir(){
+  if(ESTADO==='pendiente'){ alert('Tu solicitud ya fue enviada y está en revisión. Escríbenos por WhatsApp para agilizar la autorización.'); return; }
+  document.getElementById('formBox').style.display='block'; document.getElementById('okBox').style.display='none'; document.getElementById('modal').classList.add('on');
+}
+function cerrar(){ document.getElementById('modal').classList.remove('on'); }
+async function enviar(){
+  const v=id=>document.getElementById(id).value.trim(), err=document.getElementById('f_err'); err.textContent='';
+  if(!v('f_nombre')||v('f_cel').replace(/\D/g,'').length<7||v('f_email').indexOf('@')<1){ err.textContent='Falta nombre, celular o correo válido.'; return; }
+  const b=document.getElementById('f_go'); b.disabled=true; b.textContent='Enviando…';
+  try{
+    SOL={nombre:v('f_nombre'),empresa:v('f_empresa'),cel:v('f_cel')};
+    const tk=await rpc('smart_web_solicitar',{p_nombre:v('f_nombre'),p_empresa:v('f_empresa'),p_nit:v('f_nit'),p_cel:v('f_cel'),p_email:v('f_email'),p_ciudad:v('f_ciudad'),p_uso:v('f_uso')});
+    lsSet('sw_token',tk);
+    document.getElementById('formBox').style.display='none'; document.getElementById('okBox').style.display='block';
+    revisarAcceso();
+  }catch(e){ err.textContent='No se pudo enviar. Intenta de nuevo o escríbenos por WhatsApp.'; }
+  b.disabled=false; b.textContent='Enviar solicitud';
+}
+function avisarWA(){
+  const n=SOL?SOL.nombre+(SOL.empresa?' ('+SOL.empresa+')':''):'';
+  window.open('https://wa.me/'+WA+'?text='+encodeURIComponent('Hola Smart Empaques 👋 Soy '+n+'. Acabo de pedir acceso a las fichas técnicas y planos de etiquetas en la página. ¿Me lo autorizan?'),'_blank');
+}
+
+/* ===== Pedido y cotización =====
+   Precio = lista Mayorista sin IVA (el de la tarjeta). IVA 19% sobre los productos; el flete no lleva IVA.
+   Flete (igual que el cotizador, tarifa nueva): $101.000 por paca completa de Flexipack, $176.000 por paca de PET Multi 330,
+   y lo que no completa paca $36.500 por cada 200 uds o fracción (mínimo $36.500). PET Multi 1000 va con envío incluido. */
+const STOCK={}; let CART=[], KIT=false; const KIT_PRECIO=39000;
+const FLETE_PACA=101000, FLETE_PACA_PM=176000, FLETE_CAJA=36500, IVA=0.19;
+const refDe=sku=>REFS.find(r=>r.sku===sku);
+function agregar(sku){
+  const r=refDe(sku), color=document.getElementById('c-'+sku).value, q=parseInt(document.getElementById('q-'+sku).value,10)||0;
+  if(!color){ alert('Elige primero el color que quieres de este envase.'); document.getElementById('c-'+sku).focus(); return; }
+  if(q<100){ alert('El mínimo es 100 unidades por referencia y color.'); return; }
+  const disp=STOCK[sku+'|'+color]||0;
+  const ya=(CART.find(l=>l.sku===sku&&l.color===color)||{qty:0}).qty;
+  if(ya+q>disp){ alert('Disponible de esta referencia en '+(COL[color]||[color])[0].toLowerCase()+': '+disp.toLocaleString('es-CO')+' unidades.'); return; }
+  const l=CART.find(l=>l.sku===sku&&l.color===color); if(l) l.qty+=q; else CART.push({sku:sku,color:color,qty:q});
+  pintarBarra();
+}
+function calcular(){
+  let sub=0, flete=0, resid=0, hayFlete=false;
+  CART.forEach(l=>{
+    const r=refDe(l.sku); sub+=l.qty*r.p;
+    if(l.sku==='PM1000') return;
+    hayFlete=true;
+    flete+=Math.floor(l.qty/r.pack)*(l.sku.indexOf('PM')===0?FLETE_PACA_PM:FLETE_PACA);
+    resid+=l.qty%r.pack;
+  });
+  if(hayFlete){ flete+=Math.ceil(resid/200)*FLETE_CAJA; flete=Math.max(FLETE_CAJA,flete); }
+  const iva=Math.round(sub*IVA), kit=KIT?KIT_PRECIO:0;
+  return {sub:sub,iva:iva,flete:flete,kit:kit,total:sub+iva+flete+kit};
+}
+function pintarBarra(){
+  const b=document.getElementById('barra');
+  if(!CART.length&&!KIT){ b.style.display='none'; return; }
+  const c=calcular(), n=CART.reduce((a,l)=>a+l.qty,0);
+  document.getElementById('barraTxt').innerHTML='🛒 '+(CART.length?'<b>'+CART.length+'</b> referencia'+(CART.length>1?'s':'')+' · '+n.toLocaleString('es-CO')+' uds':'')+(KIT?(CART.length?' + ':'')+'<b>kit de muestras</b>':'')+' · <b>'+fmt(c.total)+'</b> <span style="opacity:.7">con IVA y flete</span>';
+  b.style.display='flex';
+}
+function abrirPedido(){ renderPedido(); document.getElementById('modalPedido').classList.add('on'); }
+function cerrarPedido(){ document.getElementById('modalPedido').classList.remove('on'); }
+function renderPedido(){
+  if(!CART.length&&!KIT){ cerrarPedido(); pintarBarra(); return; }
+  document.getElementById('pLineas').innerHTML=(KIT?'<div class="pl"><div style="flex:1"><b>🧪 Kit de muestras</b><br><span style="color:var(--gris)">2 unidades de cada referencia · transporte incluido</span></div><div style="width:86px;text-align:right;font-weight:700">'+fmt(KIT_PRECIO)+'</div><button class="x" onclick="quitarKit()">✕</button></div>':'')+CART.map((l,i)=>{ const r=refDe(l.sku);
+    return '<div class="pl"><div style="flex:1"><b>'+r.n+'</b> · '+(COL[l.color]||[l.color])[0]+'<br><span style="color:var(--gris)">'+fmt(r.p)+' c/u</span></div><input type="number" min="100" value="'+l.qty+'" onchange="cambiarQ('+i+',this.value)"><div style="width:86px;text-align:right;font-weight:700">'+fmt(l.qty*r.p)+'</div><button class="x" onclick="quitar('+i+')">✕</button></div>'; }).join('');
+  const c=calcular();
+  document.getElementById('pTot').innerHTML='<div><span>Subtotal productos</span><span>'+fmt(c.sub)+'</span></div><div><span>IVA 19%</span><span>'+fmt(c.iva)+'</span></div><div><span>Flete</span><span>'+(c.flete?fmt(c.flete):'Incluido')+'</span></div>'+(KIT?'<div><span>Kit de muestras (sin IVA)</span><span>'+fmt(c.kit)+'</span></div>':'')+'<div class="g"><span>Total a pagar</span><span>'+fmt(c.total)+'</span></div>';
+  pintarBarra();
+}
+function cambiarQ(i,v){
+  const l=CART[i], q=parseInt(v,10)||0, disp=STOCK[l.sku+'|'+l.color]||0;
+  if(q<100){ alert('El mínimo es 100 unidades por referencia y color.'); }
+  else if(q>disp){ alert('Disponible: '+disp.toLocaleString('es-CO')+' unidades.'); l.qty=disp; }
+  else l.qty=q;
+  renderPedido();
+}
+function quitar(i){ CART.splice(i,1); renderPedido(); }
+function quitarKit(){ KIT=false; renderPedido(); }
+function pedirKit(){ KIT=true; abrirPedido(); }
+function folioNuevo(){ const n=new Date(), z=x=>String(x).padStart(2,'0'); return 'SE-'+n.getFullYear()+z(n.getMonth()+1)+z(n.getDate())+'-'+z(n.getHours())+z(n.getMinutes())+z(n.getSeconds()); }
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function docHTML(folio,cl,c){
+  const filas=CART.map(l=>{ const r=refDe(l.sku); return '<tr><td>'+r.n+' · '+r.ml+' ml</td><td>'+(COL[l.color]||[l.color])[0]+'</td><td class="n">'+l.qty.toLocaleString('es-CO')+'</td><td class="n">'+fmt(r.p)+'</td><td class="n">'+fmt(l.qty*r.p)+'</td></tr>'; }).join('');
+  const filasKit=KIT?'<tr><td>Kit de muestras · 2 unidades de cada referencia</td><td>—</td><td class="n">1</td><td class="n">'+fmt(KIT_PRECIO)+'</td><td class="n">'+fmt(KIT_PRECIO)+'</td></tr>':'';
+  const logo=new URL('images/logo.jpg',location.href).href;
+  const resumen='Hola Smart Empaques 👋 Soy '+cl.nombre+(cl.empresa?' ('+cl.empresa+')':'')+'. Acabo de generar la orden de compra '+folio+' por '+fmt(c.total)+'. Voy a pagar por transferencia y les envío el comprobante.';
+  const wa='https://wa.me/'+WA+'?text='+encodeURIComponent(resumen);
+  return '<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Cotización y orden de compra '+folio+'</title><style>'
+  +'*{box-sizing:border-box;font-family:Segoe UI,Arial,sans-serif}body{margin:0;padding:22px;color:#0f2440;max-width:800px;margin:0 auto}'
+  +'.h{display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #0b5cab;padding-bottom:10px}.h img{height:64px}.h .f{text-align:right;font-size:13px}.h .f b{font-size:18px;color:#0b5cab}'
+  +'h2{font-size:15px;margin:18px 0 6px;color:#0b5cab}table{width:100%;border-collapse:collapse;font-size:13px}th{background:#0b5cab;color:#fff;text-align:left;padding:7px}td{padding:7px;border-bottom:1px solid #e3e8ef}.n{text-align:right}'
+  +'.cl{font-size:13px;line-height:1.7}.t{margin-left:auto;width:290px;font-size:14px;margin-top:10px}.t div{display:flex;justify-content:space-between;padding:3px 0}.t .g{font-size:18px;font-weight:800;color:#0b5cab;border-top:2px solid #0b5cab;margin-top:4px;padding-top:6px}'
+  +'.b{background:#0d1b2a;color:#e8eef5;border-radius:10px;padding:14px;margin-top:16px;font-size:13px;line-height:1.6}.b b{font-size:20px;letter-spacing:2px}'
+  +'.c{font-size:11.5px;color:#5b6b82;margin-top:14px;line-height:1.6}.bt{display:flex;gap:10px;margin-top:18px}.bt a,.bt button{flex:1;text-align:center;border:0;border-radius:10px;padding:13px;font-weight:800;font-size:14px;cursor:pointer;text-decoration:none}'
+  +'.p{background:#0b5cab;color:#fff}.w{background:#16a34a;color:#fff}@media print{.bt{display:none}body{padding:0}}'
+  +'</style></head><body><div class="h"><img src="'+logo+'" alt="Smart Empaques"><div class="f"><b>COTIZACIÓN Y ORDEN DE COMPRA</b><br>Folio <b style="font-size:14px">'+folio+'</b><br>'+new Date().toLocaleDateString('es-CO',{day:'2-digit',month:'long',year:'numeric'})+'<br>Válida 5 días hábiles</div></div>'
+  +'<h2>Cliente</h2><div class="cl"><b>'+esc(cl.nombre)+'</b>'+(cl.empresa?' · '+esc(cl.empresa):'')+'<br>NIT / CC: '+esc(cl.nit)+' · Cel: '+esc(cl.cel)+' · '+esc(cl.email)+'<br>Entrega: '+esc(cl.dir)+', '+esc(cl.ciudad)+(cl.obs?'<br>Observaciones: '+esc(cl.obs):'')+'</div>'
+  +'<h2>Detalle</h2><table><tr><th>Referencia</th><th>Color</th><th class="n">Unidades</th><th class="n">Valor unit.</th><th class="n">Subtotal</th></tr>'+filas+filasKit+'</table>'
+  +'<div class="t"><div><span>Subtotal</span><span>'+fmt(c.sub)+'</span></div><div><span>IVA 19%</span><span>'+fmt(c.iva)+'</span></div><div><span>Flete</span><span>'+(c.flete?fmt(c.flete):'Incluido')+'</span></div>'+(KIT?'<div><span>Kit de muestras (sin IVA)</span><span>'+fmt(c.kit)+'</span></div>':'')+'<div class="g"><span>TOTAL A PAGAR</span><span>'+fmt(c.total)+'</span></div></div>'
+  +'<div class="b">💳 <b>FORMA DE PAGO: TRANSFERENCIA BANCARIA</b><br>Bancolombia · Cuenta de Ahorros<br><b>86066350101</b><br>MARTIN GUEVARA MEJÍA · CC 1126604274<br>Envía el comprobante por WhatsApp al 312 412 4034 y despachamos.</div>'
+  +'<div class="c">Pedido mínimo 100 unidades por referencia y color. Precios sin IVA por unidad. Sujeto a disponibilidad de inventario al momento del pago. Smart Empaques · Km 9 Vía Manizales – Neira, Finca La Libertad · smartempaques.co</div>'
+  +'<div class="bt"><button class="p" onclick="window.print()">🖨️ Imprimir / Guardar PDF</button><a class="w" href="'+wa+'" target="_blank">💬 Avisar por WhatsApp</a></div></body></html>';
+}
+async function generar(){
+  const v=id=>document.getElementById(id).value.trim(), err=document.getElementById('p_err'); err.textContent='';
+  if(!CART.length&&!KIT){ return; }
+  const cl={nombre:v('p_nombre'),empresa:v('p_empresa'),nit:v('p_nit'),cel:v('p_cel'),email:v('p_email'),ciudad:v('p_ciudad'),dir:v('p_dir'),obs:v('p_obs')};
+  if(!cl.nombre||!cl.nit||cl.cel.replace(/\D/g,'').length<7||cl.email.indexOf('@')<1||!cl.ciudad||!cl.dir){ err.textContent='Faltan datos: nombre, NIT o cédula, celular, correo, ciudad y dirección.'; return; }
+  for(const l of CART){ if(l.qty<100){ err.textContent='El mínimo es 100 unidades por referencia y color.'; return; } }
+  const win=window.open('','_blank');
+  const b=document.getElementById('p_go'); b.disabled=true; b.textContent='Generando…';
+  const c=calcular(), folio=folioNuevo();
+  try{
+    await rpc('smart_web_pedido',{p_folio:folio,p_cliente:cl,p_items:CART.map(l=>({sku:l.sku,color:l.color,qty:l.qty,precio:refDe(l.sku).p})).concat(KIT?[{sku:'KIT',color:'-',qty:1,precio:KIT_PRECIO}]:[]),p_subtotal:c.sub,p_iva:c.iva,p_flete:c.flete,p_total:c.total});
+  }catch(e){ /* el documento se genera igual; el pedido llega también por WhatsApp */ }
+  const html=docHTML(folio,cl,c);
+  if(win){ win.document.open(); win.document.write(html); win.document.close(); }
+  else { const u=URL.createObjectURL(new Blob([html],{type:'text/html'})); location.href=u; }
+  b.disabled=false; b.textContent='Generar cotización y orden de compra';
+  cerrarPedido();
+}
+
+/* Cliente registrado: al escribir el NIT o cédula se busca en la base de Smart y se llenan los datos básicos.
+   La función solo devuelve nombre, empresa, ciudad, dirección (si es empresa) y los 4 últimos del celular. */
+let _docT=null;
+document.addEventListener('input',e=>{ if(e.target&&e.target.dataset&&e.target.dataset.auto&&e.target.id.indexOf('_nit')<0) e.target.dataset.auto=''; });
+function buscarDoc(pre){
+  clearTimeout(_docT);
+  const msg=document.getElementById(pre+'_reg'), d=document.getElementById(pre+'_nit').value.replace(/\D/g,'');
+  if(d.length<6){ msg.className='reg'; msg.textContent=''; return; }
+  _docT=setTimeout(async()=>{
+    try{
+      const r=await rpc('smart_web_cliente',{p_doc:d});
+      if(document.getElementById(pre+'_nit').value.replace(/\D/g,'')!==d) return;
+      if(r.found){
+        const put=(id,v)=>{ const el=document.getElementById(pre+'_'+id); if(el&&v&&(!el.value.trim()||el.dataset.auto==='1')){ el.value=v; el.dataset.auto='1'; } };
+        put('nombre',r.nombre); put('empresa',r.empresa); put('ciudad',r.ciudad); put('dir',r.dir); put('cel',r.cel); put('email',r.email);
+        msg.className='reg si';
+        msg.textContent='✅ Ya eres cliente de Smart'+(r.empresa?': '+r.empresa:'')+'. Cargamos tus datos: revísalos y corrígelos si cambiaron.';
+      } else { msg.className='reg no'; msg.textContent='No te encontramos todavía. Llena tus datos y quedarás registrado con tu primer pedido.'; }
+    }catch(e){ msg.className='reg'; msg.textContent=''; }
+  },450);
+}
+cargar().then(revisarAcceso);
+</script>
+</body>
+</html>

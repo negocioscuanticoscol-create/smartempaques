@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Autorizar accesos · Smart Empaques</title>
+<style>
+  :root{--azul:#0b5cab;--tinta:#0f2440;--gris:#5b6b82;--linea:#e3e8ef}
+  *{box-sizing:border-box;margin:0;padding:0;font-family:'Segoe UI',system-ui,Arial,sans-serif}
+  body{background:#f4f6f9;color:var(--tinta);padding:16px}
+  .wrap{max-width:760px;margin:0 auto}
+  h1{font-size:22px;margin-bottom:4px}.sub{font-size:13px;color:var(--gris);margin-bottom:14px}
+  .login{background:#fff;border-radius:14px;padding:18px;border:1px solid var(--linea)}
+  input{width:100%;border:1px solid #cbd5e1;border-radius:9px;padding:11px;font-size:15px;margin:8px 0}
+  button{border:0;border-radius:10px;padding:11px 16px;font-weight:800;font-size:14px;cursor:pointer}
+  .go{background:var(--azul);color:#fff}
+  .tabs{display:flex;gap:8px;margin:12px 0}.tabs button{background:#fff;border:1px solid var(--linea);color:var(--gris)}.tabs button.on{background:var(--azul);color:#fff;border-color:var(--azul)}
+  .card{background:#fff;border:1px solid var(--linea);border-radius:14px;padding:14px;margin-bottom:10px}
+  .card h3{font-size:16px}.card .d{font-size:13px;color:var(--gris);line-height:1.6;margin-top:6px}
+  .fila{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+  .ap{background:#16a34a;color:#fff}.re{background:#fdeaea;color:#c0392b}.wa{background:#e7f7ee;color:#157a3c;text-decoration:none;border-radius:10px;padding:11px 16px;font-weight:800;font-size:14px}
+  .est{display:inline-block;font-size:11px;font-weight:800;border-radius:20px;padding:3px 10px;margin-left:8px}
+  .e-pendiente{background:#fff7ed;color:#b45309}.e-aprobada{background:#e7f7ee;color:#157a3c}.e-rechazada{background:#fdeaea;color:#c0392b}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Autorizar accesos</h1>
+  <div class="sub">Solicitudes de fichas técnicas y planos de etiquetas · smartempaques.co</div>
+  <div class="login" id="login">
+    <b>Código de acceso</b>
+    <input id="cod" type="password" placeholder="Código" autocomplete="current-password">
+    <button class="go" onclick="entrar()">Entrar</button>
+    <div id="err" style="color:#c0392b;font-size:13px;margin-top:8px"></div>
+  </div>
+  <div id="panel" style="display:none">
+    <div class="tabs"><button id="t_pendiente" class="on" onclick="filtro('pendiente')">Pendientes</button><button id="t_aprobada" onclick="filtro('aprobada')">Aprobadas</button><button id="t_rechazada" onclick="filtro('rechazada')">Rechazadas</button><button id="t_pedidos" onclick="filtro('pedidos')">Pedidos</button><button onclick="cargar()">↻</button></div>
+    <div id="lista"></div>
+  </div>
+</div>
+<script>
+const SBU='https://fnayedgvamxktxfvywwl.supabase.co', SBK='sb_publishable_NVTYNkJ0V6obLwgwjXza1g_3Ihp-xMv';
+let COD='', TODAS=[], PED=[], F='pendiente';
+const rpc=(fn,body)=>fetch(SBU+'/rest/v1/rpc/'+fn,{method:'POST',headers:{apikey:SBK,Authorization:'Bearer '+SBK,'Content-Type':'application/json'},body:JSON.stringify(body)}).then(r=>r.ok?r.json():r.json().then(e=>{throw new Error(e.message||'error')}));
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+async function entrar(){
+  COD=document.getElementById('cod').value.trim();
+  try{ await cargar(); document.getElementById('login').style.display='none'; document.getElementById('panel').style.display='block'; try{sessionStorage.setItem('sw_cod',COD)}catch(e){} }
+  catch(e){ document.getElementById('err').textContent='Código incorrecto.'; }
+}
+async function cargar(){ TODAS=await rpc('smart_web_admin',{p_codigo:COD,p_accion:'listar'}); try{ PED=await rpc('smart_web_admin_pedidos',{p_codigo:COD}); }catch(e){} pintar(); }
+function filtro(f){ F=f; ['pendiente','aprobada','rechazada','pedidos'].forEach(x=>document.getElementById('t_'+x).classList.toggle('on',x===f)); pintar(); }
+function pintarPedidos(){
+  const fm=n=>'$'+Math.round(n).toLocaleString('es-CO');
+  document.getElementById('lista').innerHTML=PED.length?PED.map(p=>{ const c=p.cliente||{}, cel=String(c.cel||'').replace(/\D/g,''), tel=cel.length===10?'57'+cel:cel;
+    return '<div class="card"><h3>'+esc(p.folio)+' · '+fm(p.total)+'</h3><div class="d"><b>'+esc(c.nombre)+'</b>'+(c.empresa?' · '+esc(c.empresa):'')+' · NIT '+esc(c.nit)+'<br>📱 '+esc(c.cel)+' · ✉️ '+esc(c.email)+'<br>📍 '+esc(c.dir)+', '+esc(c.ciudad)+(c.obs?'<br>📝 '+esc(c.obs):'')+'<br>'
+      +(p.items||[]).map(i=>esc(i.sku)+' '+esc(i.color)+' × '+Number(i.qty).toLocaleString('es-CO')).join(' · ')+'<br>Subtotal '+fm(p.subtotal)+' · IVA '+fm(p.iva)+' · Flete '+fm(p.flete)+'<br>🕒 '+new Date(p.creado_en).toLocaleString('es-CO')+'</div>'
+      +'<div class="fila"><a class="wa" target="_blank" href="https://wa.me/'+tel+'">💬 Escribirle</a></div></div>'; }).join(''):'<div class="card" style="color:var(--gris)">Todavía no hay pedidos.</div>';
+}
+function pintar(){
+  document.getElementById('t_pedidos').textContent='Pedidos ('+PED.length+')';
+  if(F==='pedidos'){ pintarPedidos(); return; }
+  const l=TODAS.filter(s=>s.estado===F);
+  document.getElementById('t_pendiente').textContent='Pendientes ('+TODAS.filter(s=>s.estado==='pendiente').length+')';
+  document.getElementById('lista').innerHTML=l.length?l.map(s=>{
+    const cel=String(s.cel||'').replace(/\D/g,''), tel=cel.length===10?'57'+cel:cel;
+    const msg=encodeURIComponent('Hola '+(s.nombre||'')+', le habla Smart Empaques. Ya le autorizamos el acceso a las fichas técnicas y planos en smartempaques.co. Abra la página desde el mismo dispositivo donde hizo la solicitud.');
+    return '<div class="card"><h3>'+esc(s.nombre)+'<span class="est e-'+s.estado+'">'+s.estado+'</span></h3><div class="d">'
+      +(s.empresa?'🏢 '+esc(s.empresa)+(s.nit?' · NIT '+esc(s.nit):'')+'<br>':'')
+      +'📱 '+esc(s.cel)+' · ✉️ '+esc(s.email)+(s.ciudad?' · 📍 '+esc(s.ciudad):'')+'<br>'
+      +(s.uso?'📝 '+esc(s.uso)+'<br>':'')+'🕒 '+new Date(s.creado_en).toLocaleString('es-CO')+'</div>'
+      +'<div class="fila">'
+      +(s.estado!=='aprobada'?'<button class="ap" onclick="decidir(\''+s.id+'\',\'aprobada\')">✅ Autorizar</button>':'')
+      +(s.estado!=='rechazada'?'<button class="re" onclick="decidir(\''+s.id+'\',\'rechazada\')">Rechazar</button>':'')
+      +(s.estado==='aprobada'?'<a class="wa" target="_blank" href="https://wa.me/'+tel+'?text='+msg+'">💬 Avisarle por WhatsApp</a>':'')
+      +'</div></div>';
+  }).join(''):'<div class="card" style="color:var(--gris)">No hay solicitudes en esta lista.</div>';
+}
+async function decidir(id,estado){ try{ TODAS=await rpc('smart_web_admin',{p_codigo:COD,p_accion:'decidir',p_id:id,p_estado:estado}); pintar(); }catch(e){ alert('No se pudo guardar.'); } }
+try{ const c=sessionStorage.getItem('sw_cod'); if(c){ document.getElementById('cod').value=c; entrar(); } }catch(e){}
+</script>
+</body>
+</html>
