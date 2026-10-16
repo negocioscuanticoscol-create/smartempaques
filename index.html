@@ -98,6 +98,7 @@
   .reg.no{display:block;background:#eef3fb;color:#1b365d}
   .bigbtn{display:block;text-align:center;text-decoration:none;border-radius:12px;padding:14px;font-weight:800;font-size:15px;margin-top:10px}
   .bigbtn.wa{background:#16a34a;color:#fff}.bigbtn.pdf{background:#0b5cab;color:#fff}
+  .aviso .rev{margin-left:8px;border:0;background:#0b5cab;color:#fff;border-radius:8px;padding:6px 12px;font-weight:700;font-size:13px;cursor:pointer}
   .cta{text-align:center;margin:10px 0 6px}
   .cta a{background:var(--verde);color:#fff;text-decoration:none;padding:13px 22px;border-radius:12px;font-weight:800;font-size:15px;display:inline-block}
 </style>
@@ -133,7 +134,7 @@
 
 <div class="modal" id="modal"><div class="mbox">
   <h2>Fichas técnicas y planos de etiquetas</h2>
-  <p>Esta información es solo para clientes. Llena tus datos y nosotros revisamos y autorizamos el acceso. Cuando te aprobemos, aparecen los botones de descarga en cada envase.</p>
+  <p id="fIntro">Esta información es solo para clientes. Llena tus datos y nosotros revisamos y autorizamos el acceso. Cuando te aprobemos, aparecen los botones de descarga en cada envase.</p>
   <div id="formBox">
     <label>NIT o cédula <span style="font-weight:400">(si ya eres cliente, tus datos salen solos)</span></label><input id="f_nit" inputmode="numeric" oninput="buscarDoc('f')">
     <div class="reg" id="f_reg"></div>
@@ -147,9 +148,11 @@
     <div class="fila"><button class="no" onclick="cerrar()">Cancelar</button><button class="go" id="f_go" onclick="enviar()">Enviar solicitud</button></div>
   </div>
   <div id="okBox" style="display:none">
-    <p style="color:#157a3c;font-weight:700;font-size:15px">✅ Solicitud enviada</p>
-    <p>La revisamos y te autorizamos. Para que sea más rápido, avísanos por WhatsApp. Cuando te aprobemos, vuelve a esta página desde este mismo dispositivo y verás los botones de descarga.</p>
+    <p style="color:#157a3c;font-weight:800;font-size:16px">✅ Tu solicitud fue enviada</p>
+    <p style="color:var(--tinta);font-size:14px"><b>En pocos minutos la autorizamos.</b> Cuando esté lista, <b>vuelve a esta página desde este mismo celular o computador</b> y verás los botones para descargar la ficha técnica y los planos de etiquetas en cada envase.</p>
+    <p>Si tienes afán, avísanos por WhatsApp y la autorizamos de una vez.</p>
     <div class="fila"><button class="no" onclick="cerrar()">Cerrar</button><button class="go" onclick="avisarWA()">Avisar por WhatsApp</button></div>
+    <div class="fila" style="margin-top:8px"><button class="no" onclick="revisarYa()">🔄 Ya me autorizaron · revisar</button></div>
   </div>
 </div></div>
 
@@ -301,7 +304,7 @@ async function revisarAcceso(){
     try{
       const r=await rpc('smart_web_estado',{p_token:tk}); ESTADO=r.estado; DOCS=r.docs||[];
       if(ESTADO==='aprobada'){ av.className='aviso ok'; av.style.display='block'; av.textContent='✅ Acceso autorizado: ya puedes descargar las fichas técnicas y los planos de etiquetas en cada envase.'; }
-      else if(ESTADO==='pendiente'){ av.className='aviso'; av.style.display='block'; av.textContent='⏳ Tu solicitud está en revisión. Cuando te autoricemos, recarga esta página.'; }
+      else if(ESTADO==='pendiente'){ av.className='aviso'; av.style.display='block'; av.innerHTML='⏳ <b>Tu solicitud fue enviada.</b> En pocos minutos la autorizamos. Vuelve a esta página desde este mismo dispositivo para ver las fichas técnicas y los planos. <button class="rev" onclick="revisarYa()">Ya me autorizaron · revisar</button>'; programarRevision(); }
       else if(ESTADO==='rechazada'){ av.className='aviso'; av.style.display='block'; av.textContent='Tu solicitud no fue autorizada. Escríbenos por WhatsApp si crees que es un error.'; }
       else { av.style.display='none'; }
     }catch(e){}
@@ -319,9 +322,12 @@ function pintarDocs(){
     }
   });
 }
+let _revT=null;
+function programarRevision(){ if(_revT) return; _revT=setInterval(()=>{ if(ESTADO==='pendiente') revisarAcceso(); else { clearInterval(_revT); _revT=null; } },30000); }
+async function revisarYa(){ await revisarAcceso(); if(ESTADO==='aprobada'){ cerrar(); window.scrollTo({top:0,behavior:'smooth'}); } else alert('Todavía no está autorizada. En pocos minutos queda lista; vuelve a revisar.'); }
 function abrir(){
-  if(ESTADO==='pendiente'){ alert('Tu solicitud ya fue enviada y está en revisión. Escríbenos por WhatsApp para agilizar la autorización.'); return; }
-  document.getElementById('formBox').style.display='block'; document.getElementById('okBox').style.display='none'; document.getElementById('modal').classList.add('on');
+  const pend=(ESTADO==='pendiente');
+  document.getElementById('fIntro').style.display=pend?'none':'block'; document.getElementById('formBox').style.display=pend?'none':'block'; document.getElementById('okBox').style.display=pend?'block':'none'; document.getElementById('modal').classList.add('on');
 }
 function cerrar(){ document.getElementById('modal').classList.remove('on'); }
 async function enviar(){
@@ -332,7 +338,7 @@ async function enviar(){
     SOL={nombre:v('f_nombre'),empresa:v('f_empresa'),cel:v('f_cel')};
     const tk=await rpc('smart_web_solicitar',{p_nombre:v('f_nombre'),p_empresa:v('f_empresa'),p_nit:v('f_nit'),p_cel:v('f_cel'),p_email:v('f_email'),p_ciudad:v('f_ciudad'),p_uso:v('f_uso')});
     lsSet('sw_token',tk);
-    document.getElementById('formBox').style.display='none'; document.getElementById('okBox').style.display='block';
+    document.getElementById('fIntro').style.display='none'; document.getElementById('formBox').style.display='none'; document.getElementById('okBox').style.display='block';
     revisarAcceso();
   }catch(e){ err.textContent='No se pudo enviar. Intenta de nuevo o escríbenos por WhatsApp.'; }
   b.disabled=false; b.textContent='Enviar solicitud';
