@@ -99,8 +99,34 @@
   .bigbtn{display:block;text-align:center;text-decoration:none;border-radius:12px;padding:14px;font-weight:800;font-size:15px;margin-top:10px}
   .bigbtn.wa{background:#16a34a;color:#fff}.bigbtn.pdf{background:#0b5cab;color:#fff}
   .aviso .rev{margin-left:8px;border:0;background:#0b5cab;color:#fff;border-radius:8px;padding:6px 12px;font-weight:700;font-size:13px;cursor:pointer}
-  .infog{display:block;width:100%;max-width:760px;height:auto;margin:22px auto 0;border-radius:14px;box-shadow:0 8px 28px rgba(0,0,0,.35);background:#fff}
+  .infog_no{display:block;width:100%;max-width:760px;height:auto;margin:22px auto 0;border-radius:14px;box-shadow:0 8px 28px rgba(0,0,0,.35);background:#fff}
   .banner{padding:34px 0 38px}
+  .preg{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:24px}
+  .preg button{background:#fff;color:#0b5cab;border:0;border-radius:16px;padding:18px 28px;font-weight:800;font-size:20px;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.3);min-width:290px;font-family:inherit}
+  .preg button small{display:block;margin-top:4px;font-size:12px;color:#f97316;letter-spacing:1px;font-weight:800}
+  .preg button:hover{transform:translateY(-2px)}
+  .mbox.flyer{max-width:860px;padding:0;position:relative;overflow:auto}
+  .mbox .cierra{position:absolute;top:10px;right:10px;z-index:6;flex:none;width:38px;height:38px;border-radius:50%;background:#0f2440;color:#fff;padding:0;font-size:16px}
+  .porque{background:#fff;padding:0 0 26px}
+  .pq-head{background:linear-gradient(120deg,#0b5cab,#1577d6);color:#fff;padding:30px 0}
+  .pq-head h2{font-size:32px;font-weight:800}
+  .pq-head small{display:block;margin-top:8px;letter-spacing:3px;font-size:12px;font-weight:700;opacity:.9}
+  .pq-t{margin:24px 0 12px;font-size:18px;font-weight:800;color:#0b5cab;display:flex;align-items:center;gap:8px}
+  .pq-t:before{content:"";width:10px;height:10px;border-radius:50%;background:#0b5cab}
+  .pq-pasos{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .pq-paso{border:1px solid #dbe6f5;background:#f7faff;border-radius:14px;padding:18px;display:flex;align-items:center;gap:14px;font-size:16px;color:#0f2440}
+  .pq-paso b.n{background:#0b5cab;color:#fff;border-radius:999px;padding:6px 14px;font-size:13px;white-space:nowrap}
+  .pq-vent{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  .pq-v{border:1px solid #dbe6f5;background:#f7faff;border-radius:14px;padding:16px;display:flex;gap:14px;align-items:flex-start;color:#0f2440}
+  .pq-v .ic{flex:0 0 46px;height:46px;border-radius:12px;background:#0b5cab;color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800}
+  .pq-v h3{font-size:16px;margin-bottom:4px}.pq-v p{font-size:13.5px;line-height:1.5;color:#1b365d}.pq-v p i{display:block;margin-top:3px;opacity:.85}
+  .pq-v.ancho{grid-column:1/-1}.pq-v .bpa{margin-left:auto;border:1px solid #dbe6f5;border-radius:10px;padding:6px 12px;font-weight:800;font-size:13px;text-align:center;line-height:1.2;color:#0b5cab;background:#fff}
+  .pq-vida{margin-top:18px;border:2px solid #f5c36b;background:linear-gradient(120deg,#fff4dc,#ffe6b0);border-radius:16px;padding:20px;display:flex;gap:16px;align-items:center}
+  .pq-vida .ic{flex:0 0 56px;height:56px;border-radius:14px;background:#f59e0b;color:#fff;display:flex;align-items:center;justify-content:center;font-size:28px}
+  .pq-vida h3{font-size:23px;line-height:1.2;color:#0f2440}.pq-vida h3 em{font-style:normal;color:#c2410c;background:rgba(245,158,11,.25);padding:0 4px;border-radius:4px}
+  .pq-vida p{margin-top:6px;font-size:14px;color:#1b365d}
+  .pq-pie{margin-top:18px;background:#0b3d7a;color:#fff;border-radius:12px;padding:14px 18px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:14px}
+  @media(max-width:700px){.pq-pasos,.pq-vent{grid-template-columns:1fr}.pq-head h2{font-size:25px}.pq-vida h3{font-size:19px}.pq-vida{flex-direction:column;text-align:center}.preg button{min-width:0;width:100%}}
   .cta{text-align:center;margin:10px 0 6px}
   .cta a{background:var(--verde);color:#fff;text-decoration:none;padding:13px 22px;border-radius:12px;font-weight:800;font-size:15px;display:inline-block}
 </style>
@@ -115,9 +141,12 @@
 
 <section class="banner">
   <div class="wrap" style="text-align:center">
-    <h1 style="margin:0 auto">¿Problemas con tus envases?</h1>
-    <p style="margin:10px auto 0">Esta información es para ti.</p>
-    <img class="infog" src="images/problemas.jpg" alt="Si tu envase no sella, tu negocio paga la diferencia. Se rompe en el transporte, pierde vida útil, se derrama. Cierre de doble acción, precinto de seguridad, material grado alimenticio. Envases que sí duran. Siempre con inventario. Kit de muestra $39.000 con envío incluido." loading="eager">
+    <h1 style="margin:0 auto">Esta información es para ti</h1>
+    <p style="margin:10px auto 0">Toca una pregunta y mira el volante.</p>
+    <div class="preg">
+      <button onclick="abrirFlyer('modalProb')"><span>¿Problemas con tus envases?</span><small>TOCA AQUÍ</small></button>
+      <button onclick="abrirFlyer('modalPq')"><span>¿Por qué nuestro envase?</span><small>TOCA AQUÍ</small></button>
+    </div>
   </div>
 </section>
 
@@ -156,6 +185,31 @@
     <div class="fila"><button class="no" onclick="cerrar()">Cerrar</button><button class="go" onclick="avisarWA()">Avisar por WhatsApp</button></div>
     <div class="fila" style="margin-top:8px"><button class="no" onclick="revisarYa()">🔄 Ya me autorizaron · revisar</button></div>
   </div>
+</div></div>
+
+<div class="modal" id="modalProb"><div class="mbox flyer"><button class="cierra" onclick="cerrarFlyer('modalProb')" aria-label="Cerrar">✕</button><img src="images/problemas.jpg" alt="Si tu envase no sella, tu negocio paga la diferencia. Se rompe en el transporte, pierde vida útil, se derrama. Cierre de doble acción, precinto de seguridad, material grado alimenticio. Envases que sí duran. Siempre con inventario. Kit de muestra $39.000 con envío incluido." style="display:block;width:100%;height:auto"></div></div>
+
+<div class="modal" id="modalPq"><div class="mbox flyer"><button class="cierra" onclick="cerrarFlyer('modalPq')" aria-label="Cerrar">✕</button>
+<section class="porque">
+  <div class="pq-head"><div class="wrap"><h2>¿Por qué nuestro envase?</h2><small>FICHA TÉCNICA · VENTAJAS DEL PRODUCTO</small></div></div>
+  <div class="wrap">
+    <div class="pq-t">Apertura inviolable en 2 pasos</div>
+    <div class="pq-pasos">
+      <div class="pq-paso"><b class="n">PASO 1</b><span><b>Retire</b> el precinto de seguridad</span></div>
+      <div class="pq-paso"><b class="n">PASO 2</b><span><b>Abra</b> la tapa hermética</span></div>
+    </div>
+    <div class="pq-t">5 ventajas técnicas</div>
+    <div class="pq-vent">
+      <div class="pq-v"><div class="ic">🔒</div><div><h3>1. Cierre de doble acción</h3><p>Cierre mecánico reforzado. Sin fugas de líquidos ni aire.<i>(Hermeticidad certificada).</i></p></div></div>
+      <div class="pq-v"><div class="ic">🛡️</div><div><h3>2. Precinto de seguridad</h3><p>Evidencia de apertura para protección de contenidos.<i>(Inviolable · Tamper Evident).</i></p></div></div>
+      <div class="pq-v"><div class="ic">⛶</div><div><h3>4. Estructura reforzada</h3><p>Paredes extra resistentes. Excelente rigidez y durabilidad.<i>(Resistencia al impacto y carga vertical).</i></p></div></div>
+      <div class="pq-v"><div class="ic">≛</div><div><h3>5. Alta barrera térmica y de gases</h3><p>Barrera contra el oxígeno superior. Conserva la frescura natural del producto por más tiempo.</p></div></div>
+      <div class="pq-v ancho"><div class="ic">♻</div><div><h3>3. Material grado alimenticio</h3><p>Polipropileno virgen de alta pureza. Libre de BPA y ftalatos. <i style="display:inline">(Apto para contacto directo con alimentos).</i></p></div><div class="bpa">BPA<br>FREE</div></div>
+    </div>
+    <div class="pq-vida"><div class="ic">⏱</div><div><h3>Nuestra hermeticidad <em>aumenta la vida útil</em> de tu producto</h3><p>Cierre hermético + alta barrera de gases: tus productos se conservan frescos por mucho más tiempo.</p></div></div>
+    <div class="pq-pie"><span><b>Smart Empaques</b> · Envases plásticos grado alimenticio</span><span>Directo de fábrica · <b>312 412 4034</b></span></div>
+  </div>
+</section>
 </div></div>
 
 <div class="barra" id="barra"><div id="barraTxt" style="font-size:14px"></div><button onclick="abrirPedido()">Ver pedido y cotizar</button></div>
@@ -331,6 +385,9 @@ function abrir(){
   const pend=(ESTADO==='pendiente');
   document.getElementById('fIntro').style.display=pend?'none':'block'; document.getElementById('formBox').style.display=pend?'none':'block'; document.getElementById('okBox').style.display=pend?'block':'none'; document.getElementById('modal').classList.add('on');
 }
+function abrirFlyer(id){ document.getElementById(id).classList.add('on'); }
+function cerrarFlyer(id){ document.getElementById(id).classList.remove('on'); }
+document.addEventListener('click',e=>{ if(e.target.classList&&e.target.classList.contains('modal')&&(e.target.id==='modalProb'||e.target.id==='modalPq')) e.target.classList.remove('on'); });
 function cerrar(){ document.getElementById('modal').classList.remove('on'); }
 async function enviar(){
   const v=id=>document.getElementById(id).value.trim(), err=document.getElementById('f_err'); err.textContent='';
