@@ -534,6 +534,14 @@ async function generar(){
    Pasados 8 días ya no salen aquí; el despacho sigue guardado en la app de Smart. */
 function abrirGuias(){ document.getElementById('g_res').innerHTML=''; document.getElementById('modalGuias').classList.add('on'); setTimeout(()=>document.getElementById('g_doc').focus(),50); }
 function cerrarGuias(){ document.getElementById('modalGuias').classList.remove('on'); }
+/* 🔎 Rastrear: abre la página de rastreo de la transportadora con la guía ya puesta.
+   Interrapidísimo: siguetuenvio.interrapidisimo.com/principal/<guía> (es a donde manda su propio buscador).
+   Otra transportadora: búsqueda en Google mientras no tengamos su enlace directo. */
+function urlRastreo(transp,g){
+  const n=String(g||'').replace(/\s+/g,'');
+  if(/interr/i.test(transp||'')) return 'https://siguetuenvio.interrapidisimo.com/principal/'+encodeURIComponent(n);
+  return 'https://www.google.com/search?q='+encodeURIComponent('rastrear guia '+(transp||'')+' '+n);
+}
 function copiarGuia(g,el){ try{ navigator.clipboard.writeText(g); el.textContent='✓ Copiada'; setTimeout(()=>el.textContent='📋 Copiar',1500); }catch(e){} }
 async function verGuias(){
   const d=document.getElementById('g_doc').value.replace(/\D/g,''), out=document.getElementById('g_res'), b=document.getElementById('g_go');
@@ -545,8 +553,8 @@ async function verGuias(){
     else out.innerHTML=gs.map(x=>{
       const f=new Date(x.fecha+'T12:00:00').toLocaleDateString('es-CO',{day:'numeric',month:'long'});
       const ok=x.estado==='entregado';
-      const nums=(x.guias||[]).length?(x.guias||[]).map(g=>{ const q=encodeURIComponent('rastrear guia '+x.transportadora+' '+g);
-          return '<div class="n"><b>'+esc(g)+'</b><span data-g="'+esc(g)+'" onclick="copiarGuia(this.dataset.g,this)">📋 Copiar</span><a href="https://www.google.com/search?q='+q+'" target="_blank" rel="noopener">🔎 Rastrear</a></div>'; }).join('')
+      const nums=(x.guias||[]).length?(x.guias||[]).map(g=>{
+          return '<div class="n"><b>'+esc(g)+'</b><span data-g="'+esc(g)+'" onclick="copiarGuia(this.dataset.g,this)">📋 Copiar</span><a href="'+urlRastreo(x.transportadora,g)+'" target="_blank" rel="noopener">🔎 Rastrear</a></div>'; }).join('')
         :'<div class="n"><b style="font-size:13px">'+(x.transportadora==='Propio'?'Entrega directa nuestra (sin guía)':'La guía se está cargando')+'</b></div>';
       return '<div class="gu"><div class="t"><span>Pedido '+esc(x.folio||'')+'</span><span class="e '+(ok?'ok':'c')+'">'+(ok?'✅ Entregado':'🚚 En camino')+'</span></div>'
         +'<div style="margin-top:4px">Despachado el '+f+' · '+esc(x.transportadora==='Propio'?'Entrega propia':x.transportadora)+(x.ciudad?' · '+esc(x.ciudad):'')+'</div>'+nums+'</div>';
