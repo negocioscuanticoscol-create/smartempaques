@@ -150,7 +150,7 @@
 <header>
   <div class="wrap top">
     <a href="#" class="brand"><img src="images/logo.jpg" alt="Smart Empaques · Empaque inteligente"></a>
-    <nav><a href="#" onclick="abrirGuias();return false">📦 Guías</a><a href="#catalogo">Catálogo</a><a href="#contacto">Contacto</a><a href="autorizar.html">Autorizaciones</a></nav>
+    <nav><a href="#" onclick="abrirGuias();return false">📦 Guías</a><a href="#" onclick="abrirFlyer('modalApl');return false">Aplicaciones</a><a href="#catalogo">Catálogo</a><a href="#contacto">Contacto</a><a href="autorizar.html">Autorizaciones</a></nav>
   </div>
 </header>
 
@@ -163,6 +163,7 @@
       <button onclick="abrirFlyer('modalPq')"><span>¿Por qué nuestro envase?</span><small>TOCA AQUÍ</small></button>
       <button onclick="abrirFlyer('modalInv')"><span>¿Te quedaste sin envases?</span><small>TOCA AQUÍ</small></button>
       <button onclick="abrirGuias()"><span>📦 Guías</span><small>RASTREA TU ENVÍO</small></button>
+      <button onclick="abrirFlyer('modalApl')"><span>Aplicaciones de nuestros envases</span><small>TOCA AQUÍ</small></button>
     </div>
   </div>
 </section>
@@ -205,6 +206,8 @@
 </div></div>
 
 <div class="modal" id="modalProb"><div class="mbox flyer"><button class="cierra" onclick="cerrarFlyer('modalProb')" aria-label="Cerrar">✕</button><img src="images/volante-problemas-hd.jpg" alt="¿Te pasa esto? Deja de pagar la diferencia. Se rompe en el transporte, pierde vida útil, se derrama. Usa nuestros envases directo de fábrica: cierre de doble acción, precinto de seguridad, material grado alimenticio, estructura reforzada y alta barrera térmica y de gases. Desde 115 ml hasta 1.5 L, 15 tamaños. Pide tu kit de muestra: $39.000, incluye envío, pedido mínimo 100 unidades. Escríbenos al 312 412 4034" style="display:block;width:100%;height:auto"></div></div>
+
+<div class="modal" id="modalApl"><div class="mbox flyer"><button class="cierra" onclick="cerrarFlyer('modalApl')" aria-label="Cerrar">✕</button><img src="images/aplicaciones-envases.jpg" alt="Todas las aplicaciones de nuestros envases (ITC Packaging): lácteos, alimentación infantil, helados, IV gama, V gama, limpieza del hogar, botellas y tarros para cosmética, botellas para bebidas, termoformados, frutos secos y snacks, salsas y especias, dulces, comida de mascotas, pintura y química, café e infusiones, dietética, cárnicos y pescado. Sostenibilidad: soluciones circulares, rPP grado alimentario, rPET, Reduce Pack, TWI PET, Trust in Plastic. Tres divisiones: inyección, PET y termoformado." loading="lazy" style="display:block;width:100%;height:auto"></div></div>
 
 <div class="modal" id="modalInv"><div class="mbox flyer"><button class="cierra" onclick="cerrarFlyer('modalInv')" aria-label="Cerrar">✕</button><img src="images/volante-inventario-v2.jpg" alt="Inventario listo, tu producción no para. Disponibilidad inmediata en Colombia. Sin envase, tu línea se detiene. Con nosotros nunca te falta envase: stock en Colombia, índice de cobertura vigilado, respaldo en temporadas. Desde 115 ml hasta 1.5 L, 15 tamaños. Asegura tu inventario hoy: 312 412 4034" style="display:block;width:100%;height:auto"></div></div>
 
@@ -423,7 +426,7 @@ function abrir(){
 }
 function abrirFlyer(id){ document.getElementById(id).classList.add('on'); }
 function cerrarFlyer(id){ document.getElementById(id).classList.remove('on'); }
-document.addEventListener('click',e=>{ if(e.target.classList&&e.target.classList.contains('modal')&&(e.target.id==='modalProb'||e.target.id==='modalPq'||e.target.id==='modalInv')) e.target.classList.remove('on'); });
+document.addEventListener('click',e=>{ if(e.target.classList&&e.target.classList.contains('modal')&&(e.target.id==='modalProb'||e.target.id==='modalPq'||e.target.id==='modalInv'||e.target.id==='modalApl')) e.target.classList.remove('on'); });
 function cerrar(){ document.getElementById('modal').classList.remove('on'); }
 async function enviar(){
   const v=id=>document.getElementById(id).value.trim(), err=document.getElementById('f_err'); err.textContent='';
