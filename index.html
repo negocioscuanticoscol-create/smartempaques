@@ -555,8 +555,14 @@ function cerrarGuias(){ document.getElementById('modalGuias').classList.remove('
    Otra transportadora: búsqueda en Google mientras no tengamos su enlace directo. */
 function urlRastreo(transp,g){
   const n=String(g||'').replace(/\s+/g,'');
-  if(/interr/i.test(transp||'')) return 'https://siguetuenvio.interrapidisimo.com/principal/'+encodeURIComponent(n);
+  if(/interr/i.test(transp||'')) return 'https://siguetuenvio.interrapidisimo.com/';   // su enlace con la guía queda en blanco (piden verificación anti-robot): se abre la página y la guía va copiada
   return 'https://www.google.com/search?q='+encodeURIComponent('rastrear guia '+(transp||'')+' '+n);
+}
+function alRastrear(el){
+  const g=el.dataset.g||''; try{ navigator.clipboard.writeText(g); }catch(e){}
+  const t=document.createElement('div'); t.textContent='📋 Guía '+g+' copiada: pégala en la casilla de Interrapidísimo y dale buscar.';
+  t.style.cssText='position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#0f2440;color:#fff;padding:12px 18px;border-radius:12px;font-size:14px;z-index:99;max-width:92%;text-align:center;box-shadow:0 6px 20px rgba(0,0,0,.3)';
+  document.body.appendChild(t); setTimeout(()=>t.remove(),7000);
 }
 function copiarGuia(g,el){ try{ navigator.clipboard.writeText(g); el.textContent='✓ Copiada'; setTimeout(()=>el.textContent='📋 Copiar',1500); }catch(e){} }
 async function verGuias(){
@@ -570,7 +576,7 @@ async function verGuias(){
       const f=new Date(x.fecha+'T12:00:00').toLocaleDateString('es-CO',{day:'numeric',month:'long'});
       const ok=x.estado==='entregado';
       const nums=(x.guias||[]).length?(x.guias||[]).map(g=>{
-          return '<div class="n"><b>'+esc(g)+'</b><span data-g="'+esc(g)+'" onclick="copiarGuia(this.dataset.g,this)">📋 Copiar</span><a href="'+urlRastreo(x.transportadora,g)+'" target="_blank" rel="noopener">🔎 Rastrear</a></div>'; }).join('')
+          return '<div class="n"><b>'+esc(g)+'</b><span data-g="'+esc(g)+'" onclick="copiarGuia(this.dataset.g,this)">📋 Copiar</span><a href="'+urlRastreo(x.transportadora,g)+'" target="_blank" rel="noopener" data-g="'+esc(g)+'" onclick="alRastrear(this)">🔎 Rastrear</a></div>'; }).join('')
         :'<div class="n"><b style="font-size:13px">'+(x.transportadora==='Propio'?'Entrega directa nuestra (sin guía)':'La guía se está cargando')+'</b></div>';
       return '<div class="gu"><div class="t"><span>Pedido '+esc(x.folio||'')+'</span><span class="e '+(ok?'ok':'c')+'">'+(ok?'✅ Entregado':'🚚 En camino')+'</span></div>'
         +'<div style="margin-top:4px">Despachado el '+f+' · '+esc(x.transportadora==='Propio'?'Entrega propia':x.transportadora)+(x.ciudad?' · '+esc(x.ciudad):'')+'</div>'+nums+'</div>';
