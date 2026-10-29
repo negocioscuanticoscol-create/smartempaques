@@ -71,6 +71,7 @@
   .gu .e.c{background:#fff3e0;color:#b45309}.gu .e.ok{background:#e7f7ee;color:#157a3c}
   .gu .n{display:flex;gap:8px;align-items:center;margin-top:8px;background:#eef5ff;border:1px solid #cfe0ff;border-radius:9px;padding:8px 10px}
   .gu .n b{flex:1;font-size:16px;letter-spacing:.5px;color:var(--tinta);word-break:break-all}
+  .gu .ayuda{font-size:12px;color:#c2410c;font-weight:700;margin-top:5px}
   .gu .n a,.gu .n span{font-size:12px;font-weight:800;color:var(--azul);text-decoration:none;cursor:pointer;white-space:nowrap}
   .mbox{background:#fff;border-radius:16px;max-width:460px;width:100%;max-height:94vh;overflow:auto;padding:22px}
   .mbox h2{font-size:20px;margin-bottom:6px}.mbox p{font-size:13px;color:var(--gris);margin-bottom:12px;line-height:1.5}
@@ -560,9 +561,6 @@ function urlRastreo(transp,g){
 }
 function alRastrear(el){
   const g=el.dataset.g||''; try{ navigator.clipboard.writeText(g); }catch(e){}
-  const t=document.createElement('div'); t.textContent='📋 Guía '+g+' copiada: pégala en la casilla de Interrapidísimo y dale buscar.';
-  t.style.cssText='position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#0f2440;color:#fff;padding:12px 18px;border-radius:12px;font-size:14px;z-index:99;max-width:92%;text-align:center;box-shadow:0 6px 20px rgba(0,0,0,.3)';
-  document.body.appendChild(t); setTimeout(()=>t.remove(),7000);
 }
 function copiarGuia(g,el){ try{ navigator.clipboard.writeText(g); el.textContent='✓ Copiada'; setTimeout(()=>el.textContent='📋 Copiar',1500); }catch(e){} }
 async function verGuias(){
@@ -576,7 +574,7 @@ async function verGuias(){
       const f=new Date(x.fecha+'T12:00:00').toLocaleDateString('es-CO',{day:'numeric',month:'long'});
       const ok=x.estado==='entregado';
       const nums=(x.guias||[]).length?(x.guias||[]).map(g=>{
-          return '<div class="n"><b>'+esc(g)+'</b><span data-g="'+esc(g)+'" onclick="copiarGuia(this.dataset.g,this)">📋 Copiar</span><a href="'+urlRastreo(x.transportadora,g)+'" target="_blank" rel="noopener" data-g="'+esc(g)+'" onclick="alRastrear(this)">🔎 Rastrear</a></div>'; }).join('')
+          return '<div class="n"><b>'+esc(g)+'</b><span data-g="'+esc(g)+'" onclick="copiarGuia(this.dataset.g,this)">📋 Copiar</span><a href="'+urlRastreo(x.transportadora,g)+'" target="_blank" rel="noopener" data-g="'+esc(g)+'" onclick="alRastrear(this)">🔎 Rastrear</a></div><div class="ayuda">👆 Oprime <b>Copiar</b> y lleva este número al rastreo.</div>'; }).join('')
         :'<div class="n"><b style="font-size:13px">'+(x.transportadora==='Propio'?'Entrega directa nuestra (sin guía)':'La guía se está cargando')+'</b></div>';
       return '<div class="gu"><div class="t"><span>Pedido '+esc(x.folio||'')+'</span><span class="e '+(ok?'ok':'c')+'">'+(ok?'✅ Entregado':'🚚 En camino')+'</span></div>'
         +'<div style="margin-top:4px">Despachado el '+f+' · '+esc(x.transportadora==='Propio'?'Entrega propia':x.transportadora)+(x.ciudad?' · '+esc(x.ciudad):'')+'</div>'+nums+'</div>';
