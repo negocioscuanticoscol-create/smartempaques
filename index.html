@@ -58,6 +58,13 @@
   .aviso.ok{background:#e7f7ee;border-color:#a9dfbd;color:#157a3c}
   .modal{position:fixed;inset:0;background:rgba(15,36,64,.65);display:none;align-items:center;justify-content:center;z-index:50;padding:14px}
   .modal.on{display:flex}
+  .gu{border:1px solid var(--linea);border-radius:12px;padding:12px 14px;margin-top:10px;font-size:13px;color:var(--gris)}
+  .gu .t{display:flex;justify-content:space-between;gap:8px;align-items:center;font-weight:800;color:var(--tinta);font-size:14px}
+  .gu .e{font-size:11px;font-weight:800;border-radius:999px;padding:3px 10px;white-space:nowrap}
+  .gu .e.c{background:#fff3e0;color:#b45309}.gu .e.ok{background:#e7f7ee;color:#157a3c}
+  .gu .n{display:flex;gap:8px;align-items:center;margin-top:8px;background:#eef5ff;border:1px solid #cfe0ff;border-radius:9px;padding:8px 10px}
+  .gu .n b{flex:1;font-size:16px;letter-spacing:.5px;color:var(--tinta);word-break:break-all}
+  .gu .n a,.gu .n span{font-size:12px;font-weight:800;color:var(--azul);text-decoration:none;cursor:pointer;white-space:nowrap}
   .mbox{background:#fff;border-radius:16px;max-width:460px;width:100%;max-height:94vh;overflow:auto;padding:22px}
   .mbox h2{font-size:20px;margin-bottom:6px}.mbox p{font-size:13px;color:var(--gris);margin-bottom:12px;line-height:1.5}
   .mbox label{display:block;font-size:12px;font-weight:700;margin:10px 0 4px}
@@ -135,7 +142,7 @@
 <header>
   <div class="wrap top">
     <a href="#" class="brand"><img src="images/logo.jpg" alt="Smart Empaques · Empaque inteligente"></a>
-    <nav><a href="#catalogo">Catálogo</a><a href="#contacto">Contacto</a><a href="autorizar.html">Autorizaciones</a></nav>
+    <nav><a href="#" onclick="abrirGuias();return false">📦 Guías</a><a href="#catalogo">Catálogo</a><a href="#contacto">Contacto</a><a href="autorizar.html">Autorizaciones</a></nav>
   </div>
 </header>
 
@@ -147,6 +154,7 @@
       <button onclick="abrirFlyer('modalProb')"><span>¿Problemas con tus envases?</span><small>TOCA AQUÍ</small></button>
       <button onclick="abrirFlyer('modalPq')"><span>¿Por qué nuestro envase?</span><small>TOCA AQUÍ</small></button>
       <button onclick="abrirFlyer('modalInv')"><span>¿Te quedaste sin envases?</span><small>TOCA AQUÍ</small></button>
+      <button onclick="abrirGuias()"><span>📦 Guías</span><small>RASTREA TU ENVÍO</small></button>
     </div>
   </div>
 </section>
@@ -236,6 +244,14 @@
   <div class="banco">💳 <b>Forma de pago: transferencia bancaria</b><br>Bancolombia · Cuenta de Ahorros <b>86066350101</b><br>MARTIN GUEVARA MEJÍA · CC 1126604274<br><span style="color:#9aa7b5">Envía el comprobante por WhatsApp y despachamos.</span></div>
   <div id="p_err" style="color:#c0392b;font-size:13px;margin-top:8px"></div>
   <div class="fila"><button class="no" onclick="cerrarPedido()">Seguir viendo</button><button class="go" id="p_go" onclick="generar()">Enviar pedido por WhatsApp</button></div>
+</div></div>
+
+<div class="modal" id="modalGuias"><div class="mbox">
+  <h2>📦 Tus guías</h2>
+  <p>Pon aquí tu NIT o cédula para revisar tus guías. Te mostramos los despachos de los últimos 8 días.</p>
+  <label>NIT o cédula</label><input id="g_doc" inputmode="numeric" placeholder="Ej: 900123456" onkeydown="if(event.key==='Enter')verGuias()">
+  <div id="g_res"></div>
+  <div class="fila"><button class="no" onclick="cerrarGuias()">Cerrar</button><button class="go" id="g_go" onclick="verGuias()">Ver mis guías</button></div>
 </div></div>
 
 <div class="modal" id="modalOk"><div class="mbox">
@@ -513,6 +529,32 @@ async function generar(){
   cerrarPedido();
   window.location.href=wa;   // misma pestaña: así el navegador no lo bloquea como ventana emergente
 }
+/* 📦 GUÍAS (29-oct-2026): con el NIT o la cédula se ven las guías de los despachos de los últimos 8 días.
+   smart_web_guias() solo devuelve folio, fecha, transportadora, guías, estado y ciudad (nada de celular ni dirección).
+   Pasados 8 días ya no salen aquí; el despacho sigue guardado en la app de Smart. */
+function abrirGuias(){ document.getElementById('g_res').innerHTML=''; document.getElementById('modalGuias').classList.add('on'); setTimeout(()=>document.getElementById('g_doc').focus(),50); }
+function cerrarGuias(){ document.getElementById('modalGuias').classList.remove('on'); }
+function copiarGuia(g,el){ try{ navigator.clipboard.writeText(g); el.textContent='✓ Copiada'; setTimeout(()=>el.textContent='📋 Copiar',1500); }catch(e){} }
+async function verGuias(){
+  const d=document.getElementById('g_doc').value.replace(/\D/g,''), out=document.getElementById('g_res'), b=document.getElementById('g_go');
+  if(d.length<6){ out.innerHTML='<p style="color:#c0392b;margin-top:10px">Escribe tu NIT o cédula completo, solo números.</p>'; return; }
+  b.disabled=true; b.textContent='Buscando…'; out.innerHTML='';
+  try{
+    const r=await rpc('smart_web_guias',{p_doc:d}); const gs=(r&&r.guias)||[];
+    if(!gs.length){ out.innerHTML='<p style="margin-top:12px">No encontramos despachos de los últimos 8 días con ese número. Si tu pedido salió hace más tiempo o tienes dudas, escríbenos por WhatsApp al <b>312 412 4034</b>.</p>'; }
+    else out.innerHTML=gs.map(x=>{
+      const f=new Date(x.fecha+'T12:00:00').toLocaleDateString('es-CO',{day:'numeric',month:'long'});
+      const ok=x.estado==='entregado';
+      const nums=(x.guias||[]).length?(x.guias||[]).map(g=>{ const q=encodeURIComponent('rastrear guia '+x.transportadora+' '+g);
+          return '<div class="n"><b>'+esc(g)+'</b><span data-g="'+esc(g)+'" onclick="copiarGuia(this.dataset.g,this)">📋 Copiar</span><a href="https://www.google.com/search?q='+q+'" target="_blank" rel="noopener">🔎 Rastrear</a></div>'; }).join('')
+        :'<div class="n"><b style="font-size:13px">'+(x.transportadora==='Propio'?'Entrega directa nuestra (sin guía)':'La guía se está cargando')+'</b></div>';
+      return '<div class="gu"><div class="t"><span>Pedido '+esc(x.folio||'')+'</span><span class="e '+(ok?'ok':'c')+'">'+(ok?'✅ Entregado':'🚚 En camino')+'</span></div>'
+        +'<div style="margin-top:4px">Despachado el '+f+' · '+esc(x.transportadora==='Propio'?'Entrega propia':x.transportadora)+(x.ciudad?' · '+esc(x.ciudad):'')+'</div>'+nums+'</div>';
+    }).join('');
+  }catch(e){ out.innerHTML='<p style="color:#c0392b;margin-top:10px">No pudimos consultar en este momento. Intenta de nuevo en un minuto.</p>'; }
+  b.disabled=false; b.textContent='Ver mis guías';
+}
+document.addEventListener('click',e=>{ if(e.target&&e.target.id==='modalGuias') cerrarGuias(); });
 function cerrarOk(){ document.getElementById('modalOk').classList.remove('on'); }
 
 /* Cliente registrado: al escribir el NIT o cédula se busca en la base de Smart y se llenan los datos básicos.
