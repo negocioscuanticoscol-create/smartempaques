@@ -48,6 +48,13 @@
   .vacio{text-align:center;color:var(--gris);padding:40px 0}
   footer{background:var(--tinta);color:#cfd8e6;padding:28px 0;margin-top:20px;font-size:14px;line-height:1.7}
   footer b{color:#fff}
+  .pie{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+  .prov{display:block;text-decoration:none;border:1px solid rgba(255,255,255,.25);border-radius:14px;padding:14px 22px;text-align:center;color:#cfd8e6;min-width:240px}
+  .prov:hover{background:rgba(255,255,255,.07)}
+  .prov small{display:block;font-size:11px;letter-spacing:1px;font-weight:800;color:#f97316}
+  .prov b{display:block;font-size:22px;margin:2px 0}
+  .prov span{font-size:13px;color:#7fb4ff;text-decoration:underline}
+  @media(max-width:700px){.prov{width:100%}}
   .mapa{display:block;width:100%;max-width:none;height:400px;border:0;border-radius:12px;margin-top:14px}
   .kit{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;background:#eef5ff;border:2px solid var(--azul);border-radius:14px;padding:16px 20px;margin:6px 0 18px;font-size:14px;color:var(--gris)}
   .kit b{color:var(--azul);font-size:17px}.kitp{text-align:right}
@@ -265,11 +272,20 @@
 
 <footer id="contacto">
   <div class="wrap">
+    <div class="pie">
+    <div>
     <b>SMART EMPAQUES</b><br>
     Envases herméticos · Envíos a todo Colombia<br>
     WhatsApp ventas: <b>312 412 4034</b><br>
     Km 9 Vía Manizales – Neira, Finca La Libertad<br>
     <a href="https://www.google.com/maps?q=5.129441,-75.5055226&z=17&hl=es" target="_blank" rel="noopener" style="color:#7fb4ff">📍 Ver en Google Maps</a>
+    </div>
+    <a class="prov" href="https://www.itc-packaging.com/index.php/" target="_blank" rel="noopener">
+      <small>NUESTRO PROVEEDOR EN ESPAÑA</small>
+      <b>ITC Packaging</b>
+      <span>Visitar itc-packaging.com ↗</span>
+    </a>
+    </div>
     <iframe class="mapa" title="Ubicación Smart Empaques" loading="lazy" src="https://www.google.com/maps?q=5.129441,-75.5055226&z=17&hl=es&output=embed"></iframe>
   </div>
 </footer>
