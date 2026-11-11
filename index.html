@@ -358,7 +358,7 @@ async function cargar(){
   if(!Array.isArray(inv)) inv=[];
   // solo el ÚLTIMO corte por sku+color
   const seen={}, por={};
-  inv.forEach(x=>{ const k=x.sku+'|'+x.color; if(seen[k])return; seen[k]=1; if(x.activo!==false && (+x.cantidad||0)>0){ (por[x.sku]=por[x.sku]||[]).push(x.color); STOCK[x.sku+'|'+x.color]=+x.cantidad; } });
+  inv.forEach(x=>{ const k=x.sku+'|'+x.color; if(seen[k])return; seen[k]=1; const pk=(REFS.find(r=>r.sku===x.sku)||{}).pack||1; if(x.activo!==false && (+x.cantidad||0)>=pk){ (por[x.sku]=por[x.sku]||[]).push(x.color); STOCK[x.sku+'|'+x.color]=+x.cantidad; } });   // 11-nov-2026: solo se muestra si completa AL MENOS UNA PACA (se despacha en pacas cerradas); 186 uds del 565 transparente no son stock vendible
   if(inv[0]&&inv[0].fecha) document.getElementById('corte').textContent='Disponibilidad al '+inv[0].fecha;
   const vis=REFS.filter(r=>por[r.sku]&&por[r.sku].length);
   const g=document.getElementById('grid');
